@@ -9,6 +9,8 @@ import {
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
+import { useI18n } from "@/context/language-context";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,45 +35,59 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const PILLARS = [
-  {
-    icon: Layers,
-    title: "Multimodal intake",
-    body: "Reports, advisories, pasted text, images and free-form requests enter one pipeline with a single understanding stage.",
-  },
-  {
-    icon: FileStack,
-    title: "Transformation",
-    body: "One source becomes an executive brief, a technical advisory and a public advisory — same facts, different voice.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Trust layer",
-    body: "Fact lock, grounding, evidence coverage, audience fit and a consistency guard across every artefact from the source.",
-  },
-  {
-    icon: UserCheck,
-    title: "Human control",
-    body: "Nothing is distributed without an explicit approval, and every action lands in a hash-chained audit trail.",
-  },
-];
-
-const FLOW = [
-  "Source",
-  "Understand",
-  "Lock facts",
-  "Retrieve evidence",
-  "Intent",
-  "Generate",
-  "Verify",
-  "Trace",
-  "Review",
-  "Approve",
-  "Distribute",
-  "Audit",
-];
-
 function Landing() {
+  const { t } = useI18n();
+
+  const PILLARS = [
+    {
+      icon: Layers,
+      title: t("landing.intakeTitle", "Multimodal intake"),
+      body: t(
+        "landing.intakeDesc",
+        "Reports, advisories, pasted text, images and free-form requests enter one pipeline with a single understanding stage.",
+      ),
+    },
+    {
+      icon: FileStack,
+      title: t("landing.transformTitle", "Transformation"),
+      body: t(
+        "landing.transformDesc",
+        "One source becomes an executive brief, a technical advisory and a public advisory — same facts, different voice.",
+      ),
+    },
+    {
+      icon: ShieldCheck,
+      title: t("landing.trustTitle", "Trust layer"),
+      body: t(
+        "landing.trustDesc",
+        "Fact lock, grounding, evidence coverage, audience fit and a consistency guard across every artefact from the source.",
+      ),
+    },
+    {
+      icon: UserCheck,
+      title: t("landing.humanTitle", "Human control"),
+      body: t(
+        "landing.humanDesc",
+        "Nothing is distributed without an explicit approval, and every action lands in a hash-chained audit trail.",
+      ),
+    },
+  ];
+
+  const FLOW = [
+    t("Source"),
+    t("Understand"),
+    t("Lock facts"),
+    t("Retrieve evidence"),
+    t("Intent"),
+    t("Generate"),
+    t("Verify"),
+    t("Trace"),
+    t("Review"),
+    t("Approve"),
+    t("Distribute"),
+    t("Audit"),
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
@@ -79,18 +95,19 @@ function Landing() {
           <span className="font-mono text-sm font-semibold tracking-[0.22em] text-foreground">
             INTELLI<span className="text-ember">-</span>FORGE
           </span>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 md:gap-5">
+            <LanguageSwitcher />
             <Link
               to="/architecture"
-              className="font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+              className="hidden sm:inline-block font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
             >
-              Architecture
+              {t("nav.architecture", "Architecture")}
             </Link>
             <Link
               to="/auth"
               className="rounded-sm border border-ember/50 bg-ember/10 px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-ember transition-colors hover:bg-ember/20"
             >
-              Sign in
+              {t("auth.signin", "Sign in")}
             </Link>
           </div>
         </div>
@@ -99,33 +116,36 @@ function Landing() {
       <section className="grid-backdrop border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-24">
           <p className="label-mono">
-            Smart India Hackathon 2026 · PS 26154 · Gen AI content transformation
+            {t(
+              "brand.sih",
+              "Smart India Hackathon 2026 · PS 26154 · Gen AI content transformation",
+            )}
           </p>
           <h1 className="mt-6 max-w-3xl text-5xl leading-[1.05] font-semibold text-foreground md:text-6xl">
-            Transform faster.
-            <br />
-            <span className="text-ember">Verify before you trust.</span>
+            {t("landing.heroTitle", "Transform faster. Verify before you trust.")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-            INTELLI-FORGE turns one piece of received information into audience-ready,
-            fact-grounded, human-approved communication — with the evidence for every sentence one
-            click away.
+            {t(
+              "landing.heroSub",
+              "INTELLI-FORGE turns one piece of received information into audience-ready, fact-grounded, human-approved communication — with the evidence for every sentence one click away.",
+            )}
           </p>
           <p className="mt-4 max-w-2xl font-mono text-sm text-muted-foreground">
-            AI should automate the work, not automate responsibility.
+            {t("brand.tagline", "Verified content transformation")} ·{" "}
+            {t("AI should automate the work, not automate responsibility.")}
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
               to="/auth"
               className="inline-flex items-center gap-2 rounded-sm bg-ember px-5 py-3 font-mono text-xs font-semibold uppercase tracking-widest text-ember-foreground transition-opacity hover:opacity-90"
             >
-              Try the demo <ArrowRight className="size-4" />
+              {t("landing.launchConsole", "Try the demo")} <ArrowRight className="size-4" />
             </Link>
             <Link
               to="/architecture"
               className="inline-flex items-center gap-2 rounded-sm border border-border px-5 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-surface-raised"
             >
-              Explore the workflow
+              {t("landing.viewArch", "Explore the workflow")}
             </Link>
           </div>
         </div>
@@ -133,7 +153,9 @@ function Landing() {
 
       <section className="border-b border-border bg-surface">
         <div className="mx-auto max-w-6xl px-6 py-12">
-          <p className="label-mono">One source → many audiences → verified outputs</p>
+          <p className="label-mono">
+            {t("landing.flowTitle", "One source → many audiences → verified outputs")}
+          </p>
           <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-3">
             {FLOW.map((step, i) => (
               <span key={step} className="flex items-center gap-2">
@@ -164,18 +186,24 @@ function Landing() {
           {[
             {
               icon: Lock,
-              title: "Facts are locked before generation",
-              body: "Critical values — dates, severity, counts, recommended actions — are extracted and protected first. Every draft is checked against that lock, and a conflict stops the approval.",
+              title: t("Facts are locked before generation"),
+              body: t(
+                "Critical values — dates, severity, counts, recommended actions — are extracted and protected first. Every draft is checked against that lock, and a conflict stops the approval.",
+              ),
             },
             {
               icon: ScanSearch,
-              title: "Every sentence opens its source",
-              body: "Each generated sentence is matched to an indexed passage of the original document and shows exactly where it came from.",
+              title: t("Every sentence opens its source"),
+              body: t(
+                "Each generated sentence is matched to an indexed passage of the original document and shows exactly where it came from.",
+              ),
             },
             {
               icon: GitBranch,
-              title: "A guard against drift",
-              body: "When one source produces three artefacts, they are cross-checked against each other for contradicting facts before anything ships.",
+              title: t("A guard against drift"),
+              body: t(
+                "When one source produces three artefacts, they are cross-checked against each other for contradicting facts before anything ships.",
+              ),
             },
           ].map((item) => (
             <div key={item.title}>
@@ -190,10 +218,10 @@ function Landing() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8">
           <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-            INTELLI-FORGE · prototype for SIH 2026 PS 26154
+            {t("brand.title", "INTELLI-FORGE")} · {t("brand.sih", "SIH 2026 PS 26154")}
           </p>
           <p className="text-xs text-muted-foreground">
-            Sample scenarios in this prototype are fictional and clearly labelled.
+            {t("Sample scenarios in this prototype are fictional and clearly labelled.")}
           </p>
         </div>
       </footer>

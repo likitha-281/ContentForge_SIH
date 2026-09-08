@@ -65,7 +65,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Dashboard
     "dash.eyebrow": "Central Pipeline Overview",
     "dash.title": "Operator Dashboard",
-    "dash.desc": "Real-time synchronized pipeline metrics, active transformations, and claim verification status.",
+    "dash.desc":
+      "Real-time synchronized pipeline metrics, active transformations, and claim verification status.",
     "dash.newSource": "New Source Intake",
     "dash.statSources": "Total Sources",
     "dash.statAwaitingReview": "Awaiting Review",
@@ -87,24 +88,30 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     // Landing / Home
     "landing.heroTitle": "Transform Faster. Verify Before You Trust.",
-    "landing.heroSub": "One source, many audiences, every claim traceable. INTELLI-FORGE turns reports and advisories into audience-ready artefacts with fact locking, evidence tracing and a human approval gate.",
+    "landing.heroSub":
+      "One source, many audiences, every claim traceable. INTELLI-FORGE turns reports and advisories into audience-ready artefacts with fact locking, evidence tracing and a human approval gate.",
     "landing.launchConsole": "Launch Verification Console",
     "landing.viewArch": "Architecture & Specs",
     "landing.loadDemo": "Explore Source Intake",
     "landing.intakeTitle": "Multimodal Intake",
-    "landing.intakeDesc": "Reports, advisories, pasted text, and images enter one pipeline with a single understanding stage.",
+    "landing.intakeDesc":
+      "Reports, advisories, pasted text, and images enter one pipeline with a single understanding stage.",
     "landing.transformTitle": "Transformation",
-    "landing.transformDesc": "One source becomes an executive brief, a technical advisory and a public advisory — same facts, different voice.",
+    "landing.transformDesc":
+      "One source becomes an executive brief, a technical advisory and a public advisory — same facts, different voice.",
     "landing.trustTitle": "Trust Layer",
-    "landing.trustDesc": "Fact lock, grounding, evidence coverage, audience fit and a consistency guard across every artefact from the source.",
+    "landing.trustDesc":
+      "Fact lock, grounding, evidence coverage, audience fit and a consistency guard across every artefact from the source.",
     "landing.humanTitle": "Human Control",
-    "landing.humanDesc": "Nothing is distributed without an explicit approval, and every action lands in a hash-chained audit trail.",
+    "landing.humanDesc":
+      "Nothing is distributed without an explicit approval, and every action lands in a hash-chained audit trail.",
     "landing.flowTitle": "End-to-End Verification Lifecycle",
 
     // Upload
     "upload.eyebrow": "Stage 1 · Intake",
     "upload.title": "Upload Source",
-    "upload.desc": "What did I receive? Bring in the material, then INTELLI-FORGE parses, understands and locks its facts.",
+    "upload.desc":
+      "What did I receive? Bring in the material, then INTELLI-FORGE parses, understands and locks its facts.",
     "upload.loadDemo": "Load sample scenario",
     "upload.sourceTitle": "Source title",
     "upload.sourceKind": "Source kind",
@@ -115,7 +122,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Review
     "review.eyebrow": "Stage 7 · Human Control",
     "review.title": "Human Review & Approval Queue",
-    "review.desc": "Reviewer gate: verify facts, inspect claim traces, and approve for distribution.",
+    "review.desc":
+      "Reviewer gate: verify facts, inspect claim traces, and approve for distribution.",
     "review.tabAll": "All artefacts",
     "review.tabPending": "Awaiting review",
     "review.tabApproved": "Approved",
@@ -180,24 +188,28 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     // Landing / Home
     "landing.heroTitle": "तेज़ रूपांतरण। विश्वास से पहले सत्यापन।",
-    "landing.heroSub": "एक स्रोत, अनेक दर्शक, प्रत्येक दावे का साक्ष्य। इंटेली-फोर्ज रिपोर्ट और सलाह को तथ्य लॉक, साक्ष्य ट्रेस और मानव समीक्षा के साथ तैयार करता है।",
+    "landing.heroSub":
+      "एक स्रोत, अनेक दर्शक, प्रत्येक दावे का साक्ष्य। इंटेली-फोर्ज रिपोर्ट और सलाह को तथ्य लॉक, साक्ष्य ट्रेस और मानव समीक्षा के साथ तैयार करता है।",
     "landing.launchConsole": "सत्यापन कंसोल खोलें",
     "landing.viewArch": "आर्किटेक्चर एवं विनिर्देश",
     "landing.loadDemo": "स्रोत इनटेक देखें",
     "landing.intakeTitle": "मल्टीमॉडल इनटेक",
     "landing.intakeDesc": "रिपोर्ट, एडवाइजरी, टेक्स्ट और छवियां एक ही समझ चरण से गुजरती हैं।",
     "landing.transformTitle": "रूपांतरण",
-    "landing.transformDesc": "एक ही स्रोत से कार्यकारी सारांश, तकनीकी रिपोर्ट और जन-सलाह बनती है — समान तथ्य, भिन्न भाषा।",
+    "landing.transformDesc":
+      "एक ही स्रोत से कार्यकारी सारांश, तकनीकी रिपोर्ट और जन-सलाह बनती है — समान तथ्य, भिन्न भाषा।",
     "landing.trustTitle": "ट्रस्ट लेयर",
     "landing.trustDesc": "तथ्य लॉक, ग्राउंडिंग, साक्ष्य कवरेज और स्वचालित स्थिरता सुरक्षा।",
     "landing.humanTitle": "मानवीय नियंत्रण",
-    "landing.humanDesc": "स्पष्ट मानवीय स्वीकृति के बिना कुछ भी वितरित नहीं होता, प्रत्येक क्रिया ऑडिट लेजर में दर्ज होती है।",
+    "landing.humanDesc":
+      "स्पष्ट मानवीय स्वीकृति के बिना कुछ भी वितरित नहीं होता, प्रत्येक क्रिया ऑडिट लेजर में दर्ज होती है।",
     "landing.flowTitle": "संपूर्ण सत्यापन जीवनचक्र",
 
     // Upload
     "upload.eyebrow": "चरण 1 · स्रोत प्राप्ति",
     "upload.title": "स्रोत दस्तावेज़ अपलोड करें",
-    "upload.desc": "दस्तावेज़ प्राप्त करें; इंटेली-फोर्ज इसका विश्लेषण, तथ्यों की पहचान और उन्हें लॉक करेगा।",
+    "upload.desc":
+      "दस्तावेज़ प्राप्त करें; इंटेली-फोर्ज इसका विश्लेषण, तथ्यों की पहचान और उन्हें लॉक करेगा।",
     "upload.loadDemo": "नमूना परिदृश्य लोड करें",
     "upload.sourceTitle": "स्रोत शीर्षक",
     "upload.sourceKind": "स्रोत प्रकार",
@@ -208,7 +220,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Review
     "review.eyebrow": "चरण 7 · मानवीय नियंत्रण",
     "review.title": "मानव समीक्षा एवं अनुमोदन कतार",
-    "review.desc": "समीक्षक नियंत्रण: तथ्यों की पुष्टि करें, दावों की जांच करें और वितरण हेतु स्वीकृत करें।",
+    "review.desc":
+      "समीक्षक नियंत्रण: तथ्यों की पुष्टि करें, दावों की जांच करें और वितरण हेतु स्वीकृत करें।",
     "review.tabAll": "सभी आउटपुट",
     "review.tabPending": "समीक्षा हेतु लंबित",
     "review.tabApproved": "स्वीकृत",
@@ -273,14 +286,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     // Landing / Home
     "landing.heroTitle": "వేగంగా రూపాంతరం. విశ్వసించే ముందు ధృవీకరణ.",
-    "landing.heroSub": "ఒకే మూలం, విభిన్న ప్రేక్షకులు, ప్రతి క్లెయిమ్‌కు స్పష్టమైన ఆధారాలు. ఇంటెలి-ఫోర్జ్ వాస్తవాలను భద్రపరుస్తూ నివేదికలను రూపాంతరం చేస్తుంది.",
+    "landing.heroSub":
+      "ఒకే మూలం, విభిన్న ప్రేక్షకులు, ప్రతి క్లెయిమ్‌కు స్పష్టమైన ఆధారాలు. ఇంటెలి-ఫోర్జ్ వాస్తవాలను భద్రపరుస్తూ నివేదికలను రూపాంతరం చేస్తుంది.",
     "landing.launchConsole": "ధృవీకరణ కన్సోల్ ప్రారంభించండి",
     "landing.viewArch": "ఆర్కిటెక్చర్ & స్పెక్స్",
     "landing.loadDemo": "మూలం ఇన్‌టేక్ చూడండి",
     "landing.intakeTitle": "మల్టీమోడల్ ఇన్‌టేక్",
-    "landing.intakeDesc": "నివేదికలు, సలహాలు, టెక్స్ట్ మరియు చిత్రాలు ఒకే అవగాహన దశలోకి ప్రవేశిస్తాయి.",
+    "landing.intakeDesc":
+      "నివేదికలు, సలహాలు, టెక్స్ట్ మరియు చిత్రాలు ఒకే అవగాహన దశలోకి ప్రవేశిస్తాయి.",
     "landing.transformTitle": "పరివర్తన",
-    "landing.transformDesc": "ఒకే మూలం నుండి ఎగ్జిక్యూటివ్ బ్రీఫ్, టెక్నికల్ సలహా మరియు ప్రజా సమాచారం తయారవుతాయి.",
+    "landing.transformDesc":
+      "ఒకే మూలం నుండి ఎగ్జిక్యూటివ్ బ్రీఫ్, టెక్నికల్ సలహా మరియు ప్రజా సమాచారం తయారవుతాయి.",
     "landing.trustTitle": "ట్రస్ట్ లేయర్",
     "landing.trustDesc": "వాస్తవాల లాక్, గ్రౌండింగ్ మరియు కచ్చితమైన సాక్ష్యాల కవరేజ్.",
     "landing.humanTitle": "మానవ నియంత్రణ",
@@ -366,14 +382,16 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     // Landing / Home
     "landing.heroTitle": "வேகமான மாற்றம். நம்புவதற்கு முன் சரிபார்க்கவும்.",
-    "landing.heroSub": "ஒரு மூலம், பல பார்வையாளர்கள், ஒவ்வொரு கூற்றுக்கும் சான்றுகள். இன்டெலி-ஃபோர்ஜ் அறிக்கைகளை உண்மைப் பூட்டுடன் மாற்றுகிறது.",
+    "landing.heroSub":
+      "ஒரு மூலம், பல பார்வையாளர்கள், ஒவ்வொரு கூற்றுக்கும் சான்றுகள். இன்டெலி-ஃபோர்ஜ் அறிக்கைகளை உண்மைப் பூட்டுடன் மாற்றுகிறது.",
     "landing.launchConsole": "சரிபார்ப்பு கன்சோலைத் தொடங்கு",
     "landing.viewArch": "கட்டமைப்பு & விவரக்குறிப்புகள்",
     "landing.loadDemo": "மாதிரி மூலத்தை ஆராய்க",
     "landing.intakeTitle": "பல்வகை உட்கொள்ளல்",
     "landing.intakeDesc": "அறிக்கைகள், உரைகள் மற்றும் படங்கள் ஒரே புரிதல் நிலைக்குள் நுழைகின்றன.",
     "landing.transformTitle": "மாற்றம்",
-    "landing.transformDesc": "ஒரே மூலம் நிர்வாக சுருக்கம், தொழில்நுட்ப அறிக்கை மற்றும் பொது ஆலோசனையாக மாறுகிறது.",
+    "landing.transformDesc":
+      "ஒரே மூலம் நிர்வாக சுருக்கம், தொழில்நுட்ப அறிக்கை மற்றும் பொது ஆலோசனையாக மாறுகிறது.",
     "landing.trustTitle": "நம்பகத்தன்மை அடுக்கு",
     "landing.trustDesc": "உண்மை பூட்டுதல் மற்றும் துல்லியமான ஆதாரத் தடம்.",
     "landing.humanTitle": "மனித கட்டுப்பாடு",
@@ -451,7 +469,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "dash.ingestFirst": "প্রথম উৎস যোগ করুন",
     "dash.ingestHelp": "উৎস নথি যোগ করুন এবং তথ্য-লক করা আউটপুট তৈরি করুন।",
     "landing.heroTitle": "দ্রুত রূপান্তর। বিশ্বাসের আগে যাচাই।",
-    "landing.heroSub": "একটি উৎস, বহু দর্শক, প্রতিটি দাবির সুনির্দিষ্ট প্রমাণ। ইন্টেলি-ফোর্জ তথ্য নিরাপদ রেখে প্রতিবেদন রূপান্তর করে।",
+    "landing.heroSub":
+      "একটি উৎস, বহু দর্শক, প্রতিটি দাবির সুনির্দিষ্ট প্রমাণ। ইন্টেলি-ফোর্জ তথ্য নিরাপদ রেখে প্রতিবেদন রূপান্তর করে।",
     "landing.launchConsole": "কনসোল চালু করুন",
     "landing.viewArch": "স্থাপত্য ও বৈশিষ্ট্য",
     "landing.loadDemo": "নমুনা ইনটেক দেখুন",
@@ -509,7 +528,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "dash.ingestFirst": "पहिला स्रोत जोडा",
     "dash.ingestHelp": "दस्तऐवज प्रविष्ट करा आणि तथ्य-सुरक्षित आउटपुट तयार करा.",
     "landing.heroTitle": "जलद रूपांतरण. विश्वासापूर्वी पडताळणी.",
-    "landing.heroSub": "एक स्रोत, अनेक प्रेक्षक, प्रत्येक दाव्याचा पुरावा. इंटेलिफोर्ज सामग्री सुरक्षितपणे रूपांतरित करते.",
+    "landing.heroSub":
+      "एक स्रोत, अनेक प्रेक्षक, प्रत्येक दाव्याचा पुरावा. इंटेलिफोर्ज सामग्री सुरक्षितपणे रूपांतरित करते.",
     "landing.launchConsole": "पडताळणी कन्सोल सुरू करा",
     "landing.viewArch": "रचना आणि वैशिष्ट्ये",
     "landing.loadDemo": "स्रोत इनटेक पाहा",
@@ -721,7 +741,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "topbar.authenticating": "Autenticando sesión de operador…",
     "dash.eyebrow": "Visión general central",
     "dash.title": "Panel del operador",
-    "dash.desc": "Métricas en tiempo real, transformaciones activas y estado de verificación de afirmaciones.",
+    "dash.desc":
+      "Métricas en tiempo real, transformaciones activas y estado de verificación de afirmaciones.",
     "dash.newSource": "Nueva ingesta de fuente",
     "dash.statSources": "Fuentes totales",
     "dash.statAwaitingReview": "Pendiente de revisión",
@@ -741,7 +762,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "dash.ingestFirst": "Ingresa tu primera fuente",
     "dash.ingestHelp": "Ingresa un documento fuente y genera salidas con hechos asegurados.",
     "landing.heroTitle": "Transforma más rápido. Verifica antes de confiar.",
-    "landing.heroSub": "Una fuente, múltiples audiencias, cada afirmación rastreable con pruebas y bloqueo de hechos.",
+    "landing.heroSub":
+      "Una fuente, múltiples audiencias, cada afirmación rastreable con pruebas y bloqueo de hechos.",
     "landing.launchConsole": "Iniciar consola de verificación",
     "landing.viewArch": "Arquitectura y especificaciones",
     "landing.loadDemo": "Explorar ingesta de fuentes",
@@ -779,7 +801,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "topbar.authenticating": "Authentification de la session opérateur…",
     "dash.eyebrow": "Vue d'ensemble centrale",
     "dash.title": "Tableau de bord opérateur",
-    "dash.desc": "Métriques en temps réel, transformations actives et vérification des déclarations.",
+    "dash.desc":
+      "Métriques en temps réel, transformations actives et vérification des déclarations.",
     "dash.newSource": "Nouvelle source",
     "dash.statSources": "Sources totales",
     "dash.statAwaitingReview": "En attente d'examen",
@@ -799,7 +822,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "dash.ingestFirst": "Ajoutez votre première source",
     "dash.ingestHelp": "Ingérez un document source et générez des sorties vérifiées.",
     "landing.heroTitle": "Transformez plus vite. Vérifiez avant de faire confiance.",
-    "landing.heroSub": "Une source, plusieurs publics, chaque déclaration traçable avec preuves et faits verrouillés.",
+    "landing.heroSub":
+      "Une source, plusieurs publics, chaque déclaration traçable avec preuves et faits verrouillés.",
     "landing.launchConsole": "Lancer la console de vérification",
     "landing.viewArch": "Architecture & spécifications",
     "landing.loadDemo": "Explorer l'admission de sources",
@@ -857,7 +881,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "dash.ingestFirst": "Erste Quelle erfassen",
     "dash.ingestHelp": "Quelldokument erfassen und faktengeprüfte Ausgaben erstellen.",
     "landing.heroTitle": "Schneller transformieren. Erst prüfen, dann vertrauen.",
-    "landing.heroSub": "Eine Quelle, viele Zielgruppen, jede Aussage mathematisch nachvollziehbar belegt.",
+    "landing.heroSub":
+      "Eine Quelle, viele Zielgruppen, jede Aussage mathematisch nachvollziehbar belegt.",
     "landing.launchConsole": "Prüfkonsole starten",
     "landing.viewArch": "Architektur & Spezifikationen",
     "landing.loadDemo": "Quellaufnahme erkunden",
@@ -933,9 +958,40 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
   },
 };
 
+// Fast lookup maps for reverse English translation
+const EN_VALUE_TO_KEY: Record<string, string> = {};
+if (typeof TRANSLATIONS !== "undefined" && TRANSLATIONS.en) {
+  for (const [key, val] of Object.entries(TRANSLATIONS.en)) {
+    if (typeof val === "string" && val.trim()) {
+      EN_VALUE_TO_KEY[val.trim().toLowerCase()] = key;
+    }
+  }
+}
+
 export function translate(lang: SupportedLanguage, key: string, fallback?: string): string {
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
+  // 1. Exact key match in target language
   if (dict && dict[key]) return dict[key];
+
+  // 2. Exact match if key is an English phrase that matches a known translation key
+  const trimmedKey = key.trim().toLowerCase();
+  const keyMatch = EN_VALUE_TO_KEY[trimmedKey];
+  if (keyMatch && dict && dict[keyMatch]) {
+    return dict[keyMatch];
+  }
+
+  // 3. Match from fallback string if provided
+  if (fallback) {
+    const trimmedFb = fallback.trim().toLowerCase();
+    const fbMatch = EN_VALUE_TO_KEY[trimmedFb];
+    if (fbMatch && dict && dict[fbMatch]) {
+      return dict[fbMatch];
+    }
+  }
+
+  // 4. Default to English translation key if available
   if (TRANSLATIONS.en && TRANSLATIONS.en[key]) return TRANSLATIONS.en[key];
+
   return fallback ?? key;
 }

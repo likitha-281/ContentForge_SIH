@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { TrustBadge } from "@/components/trust";
 import { useLiveQuery } from "@/hooks/use-live-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/context/language-context";
 
 export const Route = createFileRoute("/_authenticated/outputs/")({
   head: () => ({
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_authenticated/outputs/")({
 });
 
 function OutputsPage() {
+  const { t } = useI18n();
   const { data } = useLiveQuery(
     ["outputs"] as never,
     async () => {
@@ -38,9 +40,12 @@ function OutputsPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Stage 7 · Artefacts"
-        title="Generated outputs"
-        description="Coverage is the share of sentences actually traced back to a source passage — it is measured, not assigned."
+        eyebrow={t("outputs.eyebrow", "Stage 7 · Artefacts")}
+        title={t("outputs.title", "Generated outputs")}
+        description={t(
+          "outputs.desc",
+          "Coverage is the share of sentences actually traced back to a source passage — it is measured, not assigned.",
+        )}
       />
       <div className="divide-y divide-border">
         {(data ?? []).map((output) => (
@@ -51,21 +56,23 @@ function OutputsPage() {
             className="flex flex-wrap items-center gap-4 px-6 py-4 hover:bg-surface-raised"
           >
             <div className="min-w-0 flex-1">
-              <p className="text-sm text-foreground">{output.output_type}</p>
+              <p className="text-sm text-foreground">{t(output.output_type)}</p>
               <p className="label-mono mt-0.5">
-                {output.audience} · {output.status}
+                {t(output.audience)} · {t(output.status)}
               </p>
             </div>
             <span className="font-mono text-xs text-muted-foreground">
               {output.evidence_coverage == null
                 ? "—"
-                : `${Math.round(output.evidence_coverage)}% traced`}
+                : `${Math.round(output.evidence_coverage)}% ${t("evidence.traced", "traced")}`}
             </span>
             <TrustBadge state={output.verification_status} />
           </Link>
         ))}
         {(data ?? []).length === 0 && (
-          <p className="px-6 py-8 text-sm text-muted-foreground">Nothing generated yet.</p>
+          <p className="px-6 py-8 text-sm text-muted-foreground">
+            {t("outputs.empty", "Nothing generated yet.")}
+          </p>
         )}
       </div>
     </div>

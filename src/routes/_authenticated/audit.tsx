@@ -24,6 +24,7 @@ import { useLiveQuery } from "@/hooks/use-live-query";
 import { supabase } from "@/integrations/supabase/client";
 import { verifyAuditChain } from "@/lib/review.functions";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/context/language-context";
 
 export const Route = createFileRoute("/_authenticated/audit")({
   head: () => ({
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/_authenticated/audit")({
 });
 
 function AuditPage() {
+  const { t } = useI18n();
   const verifyChainFn = useServerFn(verifyAuditChain);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<{
@@ -161,9 +163,12 @@ function AuditPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Stage 9 · Immutability"
-        title="Audit trail & cryptographic verification"
-        description="Every action, edit, and decision is cryptographically hash-chained (SHA-256). Updates and deletes are blocked by database trigger."
+        eyebrow={t("audit.eyebrow", "Stage 9 · Immutability")}
+        title={t("audit.title", "Audit trail & cryptographic verification")}
+        description={t(
+          "audit.desc",
+          "Every action, edit, and decision is cryptographically hash-chained (SHA-256). Updates and deletes are blocked by database trigger.",
+        )}
         actions={
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={exportCSV} className="text-xs">
@@ -181,7 +186,9 @@ function AuditPage() {
               className="bg-ember text-ember-foreground hover:bg-ember/90 text-xs font-semibold"
             >
               <RefreshCw className={cn("size-3.5 mr-1.5", isVerifying && "animate-spin")} />
-              {isVerifying ? "Verifying hashes..." : "Verify Hash Chain Integrity"}
+              {isVerifying
+                ? t("audit.verifying", "Verifying hashes...")
+                : t("audit.verifyIntegrity", "Verify Hash Chain Integrity")}
             </Button>
           </div>
         }
@@ -192,39 +199,45 @@ function AuditPage() {
         <div className="bg-background p-6">
           <p className="label-mono flex items-center gap-1.5">
             <Hash className="size-3.5 text-ember" />
-            Total Audited Events
+            {t("audit.totalEvents", "Total Audited Events")}
           </p>
           <p className="mt-2 font-mono text-3xl text-foreground">{events.length}</p>
-          <p className="mt-1 text-[11px] text-muted-foreground">Append-only SHA-256 chain</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {t("audit.appendOnly", "Append-only SHA-256 chain")}
+          </p>
         </div>
 
         <div className="bg-background p-6">
           <p className="label-mono flex items-center gap-1.5">
             <ShieldCheck className="size-3.5 text-verified" />
-            Grounding Assurance
+            {t("audit.groundingAssurance", "Grounding Assurance")}
           </p>
           <p className="mt-2 font-mono text-3xl text-verified">{avgCoverage}%</p>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            {groundedClaims} / {totalClaims} claims verified
+            {groundedClaims} / {totalClaims} {t("audit.claimsVerified", "claims verified")}
           </p>
         </div>
 
         <div className="bg-background p-6">
           <p className="label-mono flex items-center gap-1.5">
             <Lock className="size-3.5 text-ember" />
-            Fact-Lock Compliance
+            {t("audit.factLockCompliance", "Fact-Lock Compliance")}
           </p>
           <p className="mt-2 font-mono text-3xl text-foreground">100%</p>
-          <p className="mt-1 text-[11px] text-muted-foreground">Zero unflagged drift permitted</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {t("audit.zeroDrift", "Zero unflagged drift permitted")}
+          </p>
         </div>
 
         <div className="bg-background p-6">
           <p className="label-mono flex items-center gap-1.5">
             <Zap className="size-3.5 text-verified" />
-            Approved Artefacts
+            {t("audit.approvedArtefacts", "Approved Artefacts")}
           </p>
           <p className="mt-2 font-mono text-3xl text-foreground">{approvedCount}</p>
-          <p className="mt-1 text-[11px] text-muted-foreground">Signed off for distribution</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {t("audit.signedOff", "Signed off for distribution")}
+          </p>
         </div>
       </div>
 

@@ -19,6 +19,7 @@ import { TrustBadge } from "@/components/trust";
 import { useLiveQuery } from "@/hooks/use-live-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/language-context";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -70,6 +71,7 @@ async function loadDashboard() {
 }
 
 export function Dashboard() {
+  const { t } = useI18n();
   const { data, isLoading } = useLiveQuery("dashboard" as never, loadDashboard, [
     "sources",
     "outputs",
@@ -91,42 +93,42 @@ export function Dashboard() {
 
   const stats = [
     {
-      label: "Total Sources",
+      label: t("dash.statSources", "Total Sources"),
       value: data?.sources.length ?? 0,
       icon: Database,
       accent: "text-foreground",
       border: "border-border/80",
     },
     {
-      label: "Awaiting Review",
+      label: t("dash.statAwaitingReview", "Awaiting Review"),
       value: awaitingReviewCount,
       icon: Clock,
       accent: "text-ember",
       border: awaitingReviewCount > 0 ? "border-ember/40 bg-ember/5" : "border-border/80",
     },
     {
-      label: "Verified Claims",
+      label: t("dash.statVerifiedClaims", "Verified Claims"),
       value: verifiedClaimsCount,
       icon: FileCheck,
       accent: "text-emerald-400",
       border: "border-emerald-500/20",
     },
     {
-      label: "Flagged Claims",
+      label: t("dash.statFlaggedClaims", "Flagged Claims"),
       value: flaggedClaimsCount,
       icon: TriangleAlert,
       accent: flaggedClaimsCount > 0 ? "text-amber-400" : "text-muted-foreground",
       border: flaggedClaimsCount > 0 ? "border-amber-500/30" : "border-border/80",
     },
     {
-      label: "Open Fact Conflicts",
+      label: t("dash.statOpenConflicts", "Open Fact Conflicts"),
       value: conflictsCount,
       icon: TriangleAlert,
       accent: conflictsCount > 0 ? "text-rose-400" : "text-muted-foreground",
       border: conflictsCount > 0 ? "border-rose-500/30" : "border-border/80",
     },
     {
-      label: "Approved Artefacts",
+      label: t("dash.statApproved", "Approved Artefacts"),
       value: approvedCount,
       icon: CheckCircle2,
       accent: "text-emerald-400",
@@ -137,15 +139,18 @@ export function Dashboard() {
   return (
     <div className="min-h-full pb-12">
       <PageHeader
-        eyebrow="Central Pipeline Overview"
-        title="Operator Dashboard"
-        description="Real-time synchronized pipeline metrics, active transformations, and claim verification status."
+        eyebrow={t("dash.eyebrow", "Central Pipeline Overview")}
+        title={t("dash.title", "Operator Dashboard")}
+        description={t(
+          "dash.desc",
+          "Real-time synchronized pipeline metrics, active transformations, and claim verification status.",
+        )}
         actions={
           <Link
             to="/upload"
             className="inline-flex items-center gap-2 rounded-md bg-ember px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-ember-foreground shadow-sm transition-all hover:bg-ember/90"
           >
-            <Upload className="size-3.5" /> New Source Intake
+            <Upload className="size-3.5" /> {t("dash.newSource", "New Source Intake")}
           </Link>
         }
       />
@@ -180,14 +185,14 @@ export function Dashboard() {
             <div className="flex items-center gap-2">
               <Database className="size-4 text-ember" />
               <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
-                Recent Ingested Sources
+                {t("dash.recentSources", "Recent Ingested Sources")}
               </h2>
             </div>
             <Link
               to="/upload"
               className="text-[11px] font-mono text-ember hover:underline flex items-center gap-1"
             >
-              Intake <ArrowUpRight className="size-3" />
+              {t("dash.intake", "Intake")} <ArrowUpRight className="size-3" />
             </Link>
           </div>
 
@@ -214,12 +219,14 @@ export function Dashboard() {
 
             {!isLoading && (data?.sources ?? []).length === 0 && (
               <div className="px-5 py-8 text-center">
-                <p className="text-sm text-muted-foreground">No source documents ingested yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("dash.noSources", "No source documents ingested yet.")}
+                </p>
                 <Link
                   to="/upload"
                   className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-surface-raised px-3 py-1.5 text-xs font-mono text-ember border border-ember/30 hover:bg-ember/15 transition-colors"
                 >
-                  <Upload className="size-3" /> Ingest your first source
+                  <Upload className="size-3" /> {t("dash.ingestFirst", "Ingest your first source")}
                 </Link>
               </div>
             )}
@@ -232,14 +239,14 @@ export function Dashboard() {
             <div className="flex items-center gap-2">
               <Layers className="size-4 text-ember" />
               <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
-                Recent Transformations
+                {t("dash.recentOutputs", "Recent Transformations")}
               </h2>
             </div>
             <Link
               to="/outputs"
               className="text-[11px] font-mono text-ember hover:underline flex items-center gap-1"
             >
-              All Artefacts <ArrowUpRight className="size-3" />
+              {t("dash.allArtefacts", "All Artefacts")} <ArrowUpRight className="size-3" />
             </Link>
           </div>
 
@@ -265,9 +272,14 @@ export function Dashboard() {
 
             {!isLoading && outputs.length === 0 && (
               <div className="px-5 py-8 text-center">
-                <p className="text-sm text-muted-foreground">No artefacts generated yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("dash.noOutputs", "No artefacts generated yet.")}
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Ingest a source document and generate fact-locked outputs.
+                  {t(
+                    "dash.ingestHelp",
+                    "Ingest a source document and generate fact-locked outputs.",
+                  )}
                 </p>
               </div>
             )}
@@ -280,14 +292,14 @@ export function Dashboard() {
             <div className="flex items-center gap-2">
               <History className="size-4 text-ember" />
               <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
-                Cryptographic Audit Log
+                {t("dash.recentAudit", "Cryptographic Audit Log")}
               </h2>
             </div>
             <Link
               to="/audit"
               className="text-[11px] font-mono text-ember hover:underline flex items-center gap-1"
             >
-              Full Ledger <ArrowUpRight className="size-3" />
+              {t("dash.fullLedger", "Full Ledger")} <ArrowUpRight className="size-3" />
             </Link>
           </div>
 
@@ -311,7 +323,7 @@ export function Dashboard() {
 
             {!isLoading && (data?.audit ?? []).length === 0 && (
               <div className="px-5 py-8 text-center text-sm text-muted-foreground">
-                No activity recorded yet in cryptographic audit ledger.
+                {t("dash.noAudit", "No activity recorded yet in cryptographic audit ledger.")}
               </div>
             )}
           </div>

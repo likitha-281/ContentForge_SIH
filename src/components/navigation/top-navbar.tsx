@@ -81,7 +81,9 @@ export function TopNavbar() {
       {/* Center: Live Engine Status Pill */}
       <div className="hidden lg:flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] text-emerald-400">
         <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="font-mono tracking-wide">{t("topbar.status", "Pipeline Active · Fact Lock Ready")}</span>
+        <span className="font-mono tracking-wide">
+          {t("topbar.status", "Pipeline Active · Fact Lock Ready")}
+        </span>
       </div>
 
       {/* Right: Actions, Language, and Operator Identity */}

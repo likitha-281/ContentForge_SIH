@@ -27,6 +27,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    }
+  }, [language]);
+
   const setLanguage = (lang: SupportedLanguage) => {
     setLanguageState(lang);
     try {

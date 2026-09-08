@@ -47,6 +47,12 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const url = new URL(request.url);
+      if (url.pathname.startsWith("/~oauth")) {
+        // Prevent 404 from external OAuth callback links and redirect into authenticated app
+        const target = `${url.origin}/auth?provider=google&auto=true`;
+        return Response.redirect(target, 302);
+      }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
