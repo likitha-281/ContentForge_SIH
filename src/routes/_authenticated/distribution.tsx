@@ -32,7 +32,8 @@ export const Route = createFileRoute("/_authenticated/distribution")({
       { title: "Distribution Readiness — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Multi-channel distribution readiness. Export cryptographically verified communication packages across Web, Email, API, and SMS.",
+        content:
+          "Multi-channel distribution readiness. Export cryptographically verified communication packages across Web, Email, API, and SMS.",
       },
     ],
   }),
@@ -55,7 +56,9 @@ function DistributionPage() {
       const [outputsRes, distsRes] = await Promise.all([
         supabase
           .from("outputs")
-          .select("id, source_id, output_type, audience, tone, content, status, evidence_coverage, created_at")
+          .select(
+            "id, source_id, output_type, audience, tone, content, status, evidence_coverage, created_at",
+          )
           .eq("status", "approved")
           .order("created_at", { ascending: false }),
         supabase
@@ -115,7 +118,10 @@ function DistributionPage() {
         `    <time datetime="${timestamp}">${new Date().toLocaleString()}</time>\n` +
         `  </header>\n` +
         `  <div class="advisory-body">\n` +
-        `    ${cleanContent.split("\n\n").map((p) => `<p>${p}</p>`).join("\n    ")}\n` +
+        `    ${cleanContent
+          .split("\n\n")
+          .map((p) => `<p>${p}</p>`)
+          .join("\n    ")}\n` +
         `  </div>\n` +
         `</article>`
       );
@@ -223,7 +229,7 @@ function DistributionPage() {
               <label className="block label-mono pb-2">1. Select Approved Artefact</label>
               <div className="space-y-2">
                 {approvedOutputs.map((item) => {
-                  const isSelected = (activeOutput?.id === item.id);
+                  const isSelected = activeOutput?.id === item.id;
                   return (
                     <div
                       key={item.id}
@@ -242,7 +248,9 @@ function DistributionPage() {
                         </span>
                       </div>
                       <p className="mt-1 text-muted-foreground text-[11px]">
-                        Target Audience: <strong className="text-foreground">{item.audience}</strong> · Coverage: {Math.round(item.evidence_coverage ?? 100)}%
+                        Target Audience:{" "}
+                        <strong className="text-foreground">{item.audience}</strong> · Coverage:{" "}
+                        {Math.round(item.evidence_coverage ?? 100)}%
                       </p>
                     </div>
                   );
@@ -357,10 +365,19 @@ function DistributionPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={handleCopy} className="h-7 text-xs">
-                    {copied ? <Check className="size-3 text-verified mr-1" /> : <Copy className="size-3 mr-1" />}
+                    {copied ? (
+                      <Check className="size-3 text-verified mr-1" />
+                    ) : (
+                      <Copy className="size-3 mr-1" />
+                    )}
                     {copied ? "Copied" : "Copy Payload"}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleDownload} className="h-7 text-xs">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownload}
+                    className="h-7 text-xs"
+                  >
                     <Download className="size-3 mr-1" />
                     Download
                   </Button>
@@ -379,7 +396,8 @@ function DistributionPage() {
               <div className="text-xs">
                 <p className="font-semibold text-foreground">Cryptographic Verification Attached</p>
                 <p className="text-muted-foreground text-[11px]">
-                  All downstream consumers can verify evidence coverage ({Math.round(activeOutput?.evidence_coverage ?? 100)}%) against the source hash.
+                  All downstream consumers can verify evidence coverage (
+                  {Math.round(activeOutput?.evidence_coverage ?? 100)}%) against the source hash.
                 </p>
               </div>
             </div>
@@ -399,14 +417,19 @@ function DistributionPage() {
 
         <div className="divide-y divide-border">
           {distributions.map((dist) => (
-            <div key={dist.id} className="flex flex-wrap items-center justify-between gap-4 p-4 text-xs">
+            <div
+              key={dist.id}
+              className="flex flex-wrap items-center justify-between gap-4 p-4 text-xs"
+            >
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs font-semibold uppercase text-ember">
                     {dist.channel}
                   </span>
                   <span className="text-muted-foreground">→</span>
-                  <span className="font-mono text-foreground">{dist.target || "(broadcast channel)"}</span>
+                  <span className="font-mono text-foreground">
+                    {dist.target || "(broadcast channel)"}
+                  </span>
                 </div>
                 <p className="label-mono mt-0.5">
                   ID: {dist.id.slice(0, 8)}... · Status: {dist.status}

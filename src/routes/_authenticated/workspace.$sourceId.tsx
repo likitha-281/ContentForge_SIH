@@ -31,7 +31,8 @@ export const Route = createFileRoute("/_authenticated/workspace/$sourceId")({
       { title: "Transformation Workspace — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Lock facts, state the audience intent, and generate grounded artefacts side by side.",
+        content:
+          "Lock facts, state the audience intent, and generate grounded artefacts side by side.",
       },
       { property: "og:title", content: "Transformation Workspace — INTELLI-FORGE" },
       { property: "og:description", content: "Fact lock, intent and multi-audience generation." },
@@ -90,11 +91,20 @@ function Workspace() {
     ["workspace", sourceId] as never,
     async () => {
       const [source, facts, outputs] = await Promise.all([
-        supabase.from("sources").select("id, title, summary, status, is_demo").eq("id", sourceId).single(),
-        supabase.from("facts").select("id, label, value, is_locked, locator").eq("source_id", sourceId),
+        supabase
+          .from("sources")
+          .select("id, title, summary, status, is_demo")
+          .eq("id", sourceId)
+          .single(),
+        supabase
+          .from("facts")
+          .select("id, label, value, is_locked, locator")
+          .eq("source_id", sourceId),
         supabase
           .from("outputs")
-          .select("id, output_type, audience, verification_status, status, evidence_coverage, created_at")
+          .select(
+            "id, output_type, audience, verification_status, status, evidence_coverage, created_at",
+          )
           .eq("source_id", sourceId)
           .order("created_at", { ascending: false }),
       ]);
@@ -246,7 +256,10 @@ function Workspace() {
 
           <ul className="divide-y divide-border flex-1 overflow-y-auto max-h-[600px]">
             {(data?.facts ?? []).map((fact) => (
-              <li key={fact.id} className="flex items-start gap-3 px-5 py-3.5 hover:bg-surface-raised/50">
+              <li
+                key={fact.id}
+                className="flex items-start gap-3 px-5 py-3.5 hover:bg-surface-raised/50"
+              >
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-foreground">
                     <span className="font-semibold text-ember">{fact.label}:</span>{" "}
@@ -321,7 +334,13 @@ function Workspace() {
             />
 
             <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-              <Button variant="outline" size="sm" onClick={runIntent} disabled={parsing} className="text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={runIntent}
+                disabled={parsing}
+                className="text-xs"
+              >
                 <Sparkles className={cn("size-3 mr-1.5", parsing && "animate-spin")} />
                 {parsing ? "Parsing Intent..." : "Auto-Parse Intent into Requirements"}
               </Button>
@@ -343,7 +362,9 @@ function Workspace() {
                   className="bg-ember text-ember-foreground hover:bg-ember/90 text-xs font-semibold"
                 >
                   <Zap className={cn("size-3 mr-1.5", streaming && "animate-spin")} />
-                  {streaming ? "Streaming..." : `Generate ${requirements.length} Verified Artefact(s)`}
+                  {streaming
+                    ? "Streaming..."
+                    : `Generate ${requirements.length} Verified Artefact(s)`}
                 </Button>
               </div>
             </div>
@@ -352,13 +373,20 @@ function Workspace() {
           {/* Configured Audience Requirements Cards */}
           <div>
             <div className="flex items-center justify-between pb-2">
-              <span className="label-mono">Configured Target Audiences ({requirements.length})</span>
-              <span className="text-[11px] text-muted-foreground">Each will be generated with full claim traceability</span>
+              <span className="label-mono">
+                Configured Target Audiences ({requirements.length})
+              </span>
+              <span className="text-[11px] text-muted-foreground">
+                Each will be generated with full claim traceability
+              </span>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {requirements.map((req, i) => (
-                <div key={i} className="rounded-sm border border-border bg-surface p-4 text-xs relative group flex flex-col justify-between">
+                <div
+                  key={i}
+                  className="rounded-sm border border-border bg-surface p-4 text-xs relative group flex flex-col justify-between"
+                >
                   <button
                     onClick={() => handleRemoveRequirement(i)}
                     className="absolute top-3 right-3 text-muted-foreground hover:text-conflict opacity-0 group-hover:opacity-100 transition-opacity"
@@ -371,7 +399,8 @@ function Workspace() {
                     <span className="label-mono text-[9px] text-ember">{req.audience}</span>
                     <p className="mt-1 font-semibold text-foreground text-sm">{req.outputType}</p>
                     <p className="mt-1 text-muted-foreground text-[11px]">
-                      Tone: <strong className="text-foreground">{req.tone}</strong> · Detail: {req.detail}
+                      Tone: <strong className="text-foreground">{req.tone}</strong> · Detail:{" "}
+                      {req.detail}
                     </p>
                     <p className="mt-2 text-muted-foreground/90 text-[11px] leading-relaxed">
                       {req.objective}
@@ -390,7 +419,10 @@ function Workspace() {
                 Live Streaming Output Generation & Verification
               </p>
               {Object.entries(live).map(([id, text]) => (
-                <div key={id} className="rounded-sm border border-ember/40 bg-surface p-4 text-xs font-mono text-foreground/90 max-h-56 overflow-y-auto whitespace-pre-wrap leading-relaxed shadow-md">
+                <div
+                  key={id}
+                  className="rounded-sm border border-ember/40 bg-surface p-4 text-xs font-mono text-foreground/90 max-h-56 overflow-y-auto whitespace-pre-wrap leading-relaxed shadow-md"
+                >
                   {text}
                 </div>
               ))}

@@ -17,7 +17,12 @@ export const PIPELINE_STAGES = [
   { key: "ready", label: "Ready for transformation" },
 ] as const;
 
-type StageState = { key: string; label: string; status: "pending" | "running" | "done" | "failed"; note?: string };
+type StageState = {
+  key: string;
+  label: string;
+  status: "pending" | "running" | "done" | "failed";
+  note?: string;
+};
 
 function initialStages(): StageState[] {
   return PIPELINE_STAGES.map((s) => ({ key: s.key, label: s.label, status: "pending" }));
@@ -163,11 +168,7 @@ export const analyzeSource = createServerFn({ method: "POST" })
     if (sErr) throw new Error(sErr.message);
 
     const stages = initialStages();
-    const setStage = async (
-      key: string,
-      status: StageState["status"],
-      note?: string,
-    ) => {
+    const setStage = async (key: string, status: StageState["status"], note?: string) => {
       const stage = stages.find((s) => s.key === key);
       if (stage) {
         stage.status = status;
@@ -178,7 +179,12 @@ export const analyzeSource = createServerFn({ method: "POST" })
         .update({
           stages,
           current_stage: key,
-          status: status === "failed" ? "failed" : key === "ready" && status === "done" ? "ready" : "running",
+          status:
+            status === "failed"
+              ? "failed"
+              : key === "ready" && status === "done"
+                ? "ready"
+                : "running",
           updated_at: new Date().toISOString(),
         })
         .eq("id", job.id);
@@ -192,11 +198,7 @@ export const analyzeSource = createServerFn({ method: "POST" })
       await setStage("parsing", "done", `${text.length.toLocaleString()} characters normalised`);
 
       await setStage("extraction", "running");
-      await setStage(
-        "extraction",
-        "done",
-        "Text-native source — no OCR/transcription required",
-      );
+      await setStage("extraction", "done", "Text-native source — no OCR/transcription required");
 
       await setStage("understanding", "running");
       const understanding = await chatJson<Understanding>(
@@ -239,9 +241,7 @@ export const analyzeSource = createServerFn({ method: "POST" })
       const locate = (quote: string) => {
         const needle = (quote ?? "").trim().slice(0, 60).toLowerCase();
         if (!needle) return null;
-        return (
-          insertedChunks?.find((c) => c.content.toLowerCase().includes(needle)) ?? null
-        );
+        return insertedChunks?.find((c) => c.content.toLowerCase().includes(needle)) ?? null;
       };
 
       await setStage("facts", "running");

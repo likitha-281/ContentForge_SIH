@@ -28,14 +28,22 @@ export const Route = createFileRoute("/_authenticated/upload")({
       { title: "Upload a Source — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Bring in any report, advisory or note and start the verified understanding and fact-locking pipeline.",
+        content:
+          "Bring in any report, advisory or note and start the verified understanding and fact-locking pipeline.",
       },
     ],
   }),
   component: UploadPage,
 });
 
-const KINDS = ["report", "advisory", "incident report", "transcript", "policy directive", "briefing note"];
+const KINDS = [
+  "report",
+  "advisory",
+  "incident report",
+  "transcript",
+  "policy directive",
+  "briefing note",
+];
 
 const PRESET_SCENARIOS = [
   {
@@ -188,7 +196,9 @@ function UploadPage() {
                   className="rounded border border-border bg-background p-2.5 text-left text-xs transition-colors hover:border-ember/60 hover:bg-surface-raised"
                 >
                   <span className="font-semibold text-foreground line-clamp-1">{p.title}</span>
-                  <span className="mt-1 block font-mono text-[10px] text-ember uppercase">{p.kind}</span>
+                  <span className="mt-1 block font-mono text-[10px] text-ember uppercase">
+                    {p.kind}
+                  </span>
                 </button>
               ))}
             </div>
@@ -264,7 +274,8 @@ function UploadPage() {
                 Raw Source Text (Supports Any Language & Size)
               </Label>
               <span className="label-mono">
-                {text.length.toLocaleString()} chars · {new TextEncoder().encode(text).length.toLocaleString()} bytes
+                {text.length.toLocaleString()} chars ·{" "}
+                {new TextEncoder().encode(text).length.toLocaleString()} bytes
               </span>
             </div>
             <Textarea
@@ -295,13 +306,17 @@ function UploadPage() {
             </p>
             <ul className="space-y-2 text-muted-foreground leading-relaxed">
               <li>
-                <strong className="text-foreground">Deterministic Extraction:</strong> Quotes are located into numbered passage chunks <code>[S1-P1]</code>.
+                <strong className="text-foreground">Deterministic Extraction:</strong> Quotes are
+                located into numbered passage chunks <code>[S1-P1]</code>.
               </li>
               <li>
-                <strong className="text-foreground">Strict Fact-Locking:</strong> Dates, casualties, CVE numbers, and directives are locked to prevent hallucination.
+                <strong className="text-foreground">Strict Fact-Locking:</strong> Dates, casualties,
+                CVE numbers, and directives are locked to prevent hallucination.
               </li>
               <li>
-                <strong className="text-foreground">Multilingual Capability:</strong> Input documents in Hindi, Tamil, Telugu, English, or any global language are parsed with native entity recognition.
+                <strong className="text-foreground">Multilingual Capability:</strong> Input
+                documents in Hindi, Tamil, Telugu, English, or any global language are parsed with
+                native entity recognition.
               </li>
             </ul>
           </div>
@@ -312,7 +327,8 @@ function UploadPage() {
               SIH 2026 Problem Statement 26154
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Designed to transform high-stakes government and enterprise material into audience-ready outputs with 100% mathematical auditability.
+              Designed to transform high-stakes government and enterprise material into
+              audience-ready outputs with 100% mathematical auditability.
             </p>
           </div>
         </aside>

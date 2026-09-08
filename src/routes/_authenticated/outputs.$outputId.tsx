@@ -34,7 +34,8 @@ export const Route = createFileRoute("/_authenticated/outputs/$outputId")({
       { title: "Evidence & Claim Trace — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Inspect mathematical claim traceability, source passage grounding, and fact-lock compliance.",
+        content:
+          "Inspect mathematical claim traceability, source passage grounding, and fact-lock compliance.",
       },
     ],
   }),
@@ -59,17 +60,35 @@ function OutputTraceView() {
     async () => {
       const { data: output, error } = await supabase
         .from("outputs")
-        .select("id, source_id, output_type, audience, tone, content, status, verification_status, evidence_coverage, created_at, updated_at")
+        .select(
+          "id, source_id, output_type, audience, tone, content, status, verification_status, evidence_coverage, created_at, updated_at",
+        )
         .eq("id", outputId)
         .single();
       if (error || !output) return null;
 
       const [source, claims, chunks, conflicts, checks] = await Promise.all([
         supabase.from("sources").select("id, title, summary").eq("id", output.source_id).single(),
-        supabase.from("output_claims").select("id, ordinal, sentence, chunk_id, locator, evidence_text, grounded, match_score").eq("output_id", outputId).order("ordinal"),
-        supabase.from("source_chunks").select("id, locator, content, ordinal").eq("source_id", output.source_id).order("ordinal"),
-        supabase.from("fact_conflicts").select("id, fact_label, locked_value, generated_text, generated_value, suggestion, status").eq("output_id", outputId),
-        supabase.from("trust_checks").select("id, check_key, label, status, detail, method").eq("output_id", outputId),
+        supabase
+          .from("output_claims")
+          .select("id, ordinal, sentence, chunk_id, locator, evidence_text, grounded, match_score")
+          .eq("output_id", outputId)
+          .order("ordinal"),
+        supabase
+          .from("source_chunks")
+          .select("id, locator, content, ordinal")
+          .eq("source_id", output.source_id)
+          .order("ordinal"),
+        supabase
+          .from("fact_conflicts")
+          .select(
+            "id, fact_label, locked_value, generated_text, generated_value, suggestion, status",
+          )
+          .eq("output_id", outputId),
+        supabase
+          .from("trust_checks")
+          .select("id, check_key, label, status, detail, method")
+          .eq("output_id", outputId),
       ]);
 
       return {
@@ -133,14 +152,23 @@ function OutputTraceView() {
       await suggestFn({ data: { conflictId } });
       toast.success("Correction suggested.", { id: "sug-" + conflictId });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to suggest.", { id: "sug-" + conflictId });
+      toast.error(err instanceof Error ? err.message : "Failed to suggest.", {
+        id: "sug-" + conflictId,
+      });
     }
   };
 
-  const handleResolveConflict = async (conflictId: string, action: "accept_suggestion" | "keep_edit") => {
+  const handleResolveConflict = async (
+    conflictId: string,
+    action: "accept_suggestion" | "keep_edit",
+  ) => {
     try {
       await resolveFn({ data: { conflictId, action } });
-      toast.success(action === "accept_suggestion" ? "Correction applied and re-verified." : "Operator override recorded in audit trail.");
+      toast.success(
+        action === "accept_suggestion"
+          ? "Correction applied and re-verified."
+          : "Operator override recorded in audit trail.",
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not resolve conflict.");
     }
@@ -196,14 +224,20 @@ function OutputTraceView() {
       <div className="border-b border-border bg-surface px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <TrustBadge state={output.verification_status} />
-          <span className="text-xs text-muted-foreground">Status: <strong className="text-foreground capitalize">{output.status}</strong></span>
-          <span className="text-xs text-muted-foreground">Tone: <strong className="text-foreground">{output.tone ?? "Standard"}</strong></span>
+          <span className="text-xs text-muted-foreground">
+            Status: <strong className="text-foreground capitalize">{output.status}</strong>
+          </span>
+          <span className="text-xs text-muted-foreground">
+            Tone: <strong className="text-foreground">{output.tone ?? "Standard"}</strong>
+          </span>
         </div>
         <div className="flex items-center gap-4 text-xs">
           <div>
             <span className="text-muted-foreground">Grounding Coverage: </span>
             <span className="font-mono font-semibold text-verified">
-              {output.evidence_coverage != null ? `${Math.round(output.evidence_coverage)}%` : "N/A"}
+              {output.evidence_coverage != null
+                ? `${Math.round(output.evidence_coverage)}%`
+                : "N/A"}
             </span>
           </div>
           <div>
@@ -214,7 +248,12 @@ function OutputTraceView() {
           </div>
           <div>
             <span className="text-muted-foreground">Fact Conflicts: </span>
-            <span className={cn("font-mono font-semibold", openConflicts.length > 0 ? "text-conflict" : "text-verified")}>
+            <span
+              className={cn(
+                "font-mono font-semibold",
+                openConflicts.length > 0 ? "text-conflict" : "text-verified",
+              )}
+            >
               {openConflicts.length}
             </span>
           </div>
@@ -231,12 +270,16 @@ function OutputTraceView() {
                 Approval Blocked: {openConflicts.length} Protected-Fact Conflict(s) Detected
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                In accordance with SIH Problem Statement 26154, critical facts must never hallucinate or contradict the source.
+                In accordance with SIH Problem Statement 26154, critical facts must never
+                hallucinate or contradict the source.
               </p>
 
               <div className="mt-4 space-y-3">
                 {openConflicts.map((conf) => (
-                  <div key={conf.id} className="rounded border border-conflict/30 bg-surface p-3 text-xs">
+                  <div
+                    key={conf.id}
+                    className="rounded border border-conflict/30 bg-surface p-3 text-xs"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-[11px] font-semibold text-ember">
                         {conf.fact_label}
@@ -248,7 +291,9 @@ function OutputTraceView() {
 
                     <div className="mt-2 text-foreground">
                       <span className="text-muted-foreground">Contradicting sentence: </span>
-                      <span className="underline decoration-conflict decoration-2">{conf.generated_text}</span>
+                      <span className="underline decoration-conflict decoration-2">
+                        {conf.generated_text}
+                      </span>
                     </div>
 
                     {conf.suggestion && (
@@ -316,10 +361,20 @@ function OutputTraceView() {
             className="mt-4 font-sans text-sm leading-relaxed border-border bg-background focus-visible:ring-ember"
           />
           <div className="mt-4 flex items-center justify-end gap-2">
-            <Button variant="outline" size="sm" onClick={() => setIsEditing(false)} disabled={isSaving}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditing(false)}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSaveEdit} disabled={isSaving} className="bg-ember text-ember-foreground hover:bg-ember/90">
+            <Button
+              size="sm"
+              onClick={handleSaveEdit}
+              disabled={isSaving}
+              className="bg-ember text-ember-foreground hover:bg-ember/90"
+            >
               {isSaving ? "Saving & re-verifying..." : "Save & Re-verify"}
             </Button>
           </div>
@@ -335,7 +390,9 @@ function OutputTraceView() {
               <FileText className="size-4 text-ember" />
               Generated Sentences ({claims.length})
             </h2>
-            <span className="text-[11px] text-muted-foreground">Click sentence to inspect evidence</span>
+            <span className="text-[11px] text-muted-foreground">
+              Click sentence to inspect evidence
+            </span>
           </div>
 
           <div className="space-y-2.5">
@@ -405,12 +462,16 @@ function OutputTraceView() {
                   <span>
                     Match Score:{" "}
                     <strong className="text-foreground">
-                      {selectedClaim.match_score != null ? `${Math.round(selectedClaim.match_score * 100)}%` : "N/A"}
+                      {selectedClaim.match_score != null
+                        ? `${Math.round(selectedClaim.match_score * 100)}%`
+                        : "N/A"}
                     </strong>
                   </span>
                   <span>
                     Target Passage:{" "}
-                    <strong className="text-ember">{selectedClaim.locator || "Connecting Sentence"}</strong>
+                    <strong className="text-ember">
+                      {selectedClaim.locator || "Connecting Sentence"}
+                    </strong>
                   </span>
                 </div>
               </div>
@@ -419,12 +480,17 @@ function OutputTraceView() {
               <div className="rounded-sm border border-border bg-surface p-4">
                 <div className="flex items-center justify-between pb-2 border-b border-border text-xs">
                   <span className="font-semibold text-foreground">
-                    Supporting Passage: {activeChunk?.locator ?? selectedClaim.locator ?? "General Context"}
+                    Supporting Passage:{" "}
+                    {activeChunk?.locator ?? selectedClaim.locator ?? "General Context"}
                   </span>
-                  <span className="font-mono text-[10px] text-muted-foreground">Indexed Document Chunk</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    Indexed Document Chunk
+                  </span>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-foreground whitespace-pre-wrap">
-                  {activeChunk?.content || selectedClaim.evidence_text || "This sentence serves as structured connective framing and introduces no new ungrounded assertions."}
+                  {activeChunk?.content ||
+                    selectedClaim.evidence_text ||
+                    "This sentence serves as structured connective framing and introduces no new ungrounded assertions."}
                 </p>
               </div>
 

@@ -92,10 +92,7 @@ export const resolveConflict = createServerFn({ method: "POST" })
         .from("outputs")
         .update({ content: updated, status: "edited", updated_at: new Date().toISOString() })
         .eq("id", conflict.output_id);
-      await supabase
-        .from("fact_conflicts")
-        .update({ status: "corrected" })
-        .eq("id", conflict.id);
+      await supabase.from("fact_conflicts").update({ status: "corrected" }).eq("id", conflict.id);
       await appendAudit(supabase, userId, {
         actor: "operator",
         action: "conflict.correction_accepted",
@@ -107,10 +104,7 @@ export const resolveConflict = createServerFn({ method: "POST" })
       return { ok: true, reverified: true };
     }
 
-    await supabase
-      .from("fact_conflicts")
-      .update({ status: "overridden" })
-      .eq("id", conflict.id);
+    await supabase.from("fact_conflicts").update({ status: "overridden" }).eq("id", conflict.id);
     await appendAudit(supabase, userId, {
       actor: "operator",
       action: "conflict.overridden",

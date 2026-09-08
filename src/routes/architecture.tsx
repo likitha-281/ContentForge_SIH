@@ -111,22 +111,26 @@ const EXTENSION_HOOKS = [
   {
     title: "1. Vector Database & Semantic Embeddings",
     location: "src/lib/intent.functions.ts & src/lib/verify.server.ts",
-    comment: "Replace PostgreSQL full-text search (tsv) with pgvector (vector(1536)) or Pinecone/Qdrant embeddings for semantic retrieval.",
+    comment:
+      "Replace PostgreSQL full-text search (tsv) with pgvector (vector(1536)) or Pinecone/Qdrant embeddings for semantic retrieval.",
   },
   {
     title: "2. Self-Hosted Local LLM Gateway (Ollama / vLLM)",
     location: "src/lib/ai.server.ts",
-    comment: "Switch GATEWAY endpoint to http://localhost:11434/v1/chat/completions (Ollama) or custom vLLM instances for air-gapped sovereign deployment.",
+    comment:
+      "Switch GATEWAY endpoint to http://localhost:11434/v1/chat/completions (Ollama) or custom vLLM instances for air-gapped sovereign deployment.",
   },
   {
     title: "3. Live Webhook Dispatch & Notification Microservices",
     location: "src/lib/review.functions.ts (prepareDistribution)",
-    comment: "Hook real HTTP dispatch to national emergency broadcast APIs, Gov SMS Gateways, or CERT-In Slack/Teams webhooks.",
+    comment:
+      "Hook real HTTP dispatch to national emergency broadcast APIs, Gov SMS Gateways, or CERT-In Slack/Teams webhooks.",
   },
   {
     title: "4. Multilingual OCR & Multi-Modal Document Extraction",
     location: "src/lib/pipeline.functions.ts (analyzeSource)",
-    comment: "Integrate Tesseract OCR or Vision LLMs to ingest scanned government PDFs, press release photos, and audio broadcasts.",
+    comment:
+      "Integrate Tesseract OCR or Vision LLMs to ingest scanned government PDFs, press release photos, and audio broadcasts.",
   },
 ];
 
@@ -150,8 +154,9 @@ function ArchitecturePage() {
           Smart India Hackathon 2026 · Problem Statement 26154
         </p>
         <p className="mt-4 text-sm text-muted-foreground max-w-3xl leading-relaxed">
-          INTELLI-FORGE solves the critical problem of transforming raw, high-stakes incident intelligence
-          into multi-audience communications without hallucinations, fact drift, or unauthorized distribution.
+          INTELLI-FORGE solves the critical problem of transforming raw, high-stakes incident
+          intelligence into multi-audience communications without hallucinations, fact drift, or
+          unauthorized distribution.
         </p>
       </div>
 
@@ -175,7 +180,9 @@ function ArchitecturePage() {
               >
                 <div>
                   <div className="flex items-center justify-between pb-3 border-b border-border">
-                    <span className="font-mono text-xs font-bold text-ember">STAGE {stage.num}</span>
+                    <span className="font-mono text-xs font-bold text-ember">
+                      STAGE {stage.num}
+                    </span>
                     <Icon className="size-4 text-muted-foreground" />
                   </div>
                   <h3 className="mt-3 text-sm font-semibold text-foreground">{stage.name}</h3>
@@ -199,12 +206,16 @@ function ArchitecturePage() {
           Backend Extensibility &amp; Enterprise Hooks
         </h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Clear integration points in the codebase for production microservices and self-hosted models:
+          Clear integration points in the codebase for production microservices and self-hosted
+          models:
         </p>
 
         <div className="mt-5 space-y-4">
           {EXTENSION_HOOKS.map((hook) => (
-            <div key={hook.title} className="rounded border border-border/80 bg-background p-4 text-xs">
+            <div
+              key={hook.title}
+              className="rounded border border-border/80 bg-background p-4 text-xs"
+            >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-foreground">{hook.title}</span>
                 <code className="rounded bg-surface px-2 py-0.5 font-mono text-[10px] text-ember">

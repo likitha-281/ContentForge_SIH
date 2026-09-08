@@ -57,7 +57,9 @@ function AuthPage() {
         options: { emailRedirectTo: window.location.origin },
       });
       if (error) throw error;
-      toast.success(`Confirmation link resent to ${target}. Please check your inbox & spam folder.`);
+      toast.success(
+        `Confirmation link resent to ${target}. Please check your inbox & spam folder.`,
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not resend confirmation email.");
     }
@@ -141,10 +143,7 @@ function AuthPage() {
   return (
     <div className="grid-backdrop flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md rounded-sm border border-border bg-surface p-8">
-        <Link
-          to="/"
-          className="font-mono text-sm font-semibold tracking-[0.22em] text-foreground"
-        >
+        <Link to="/" className="font-mono text-sm font-semibold tracking-[0.22em] text-foreground">
           INTELLI<span className="text-ember">-</span>FORGE
         </Link>
         <h1 className="mt-6 text-2xl font-semibold">
@@ -177,7 +176,11 @@ function AuthPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <Button type="submit" disabled={busy} className="w-full font-mono text-xs uppercase tracking-widest">
+          <Button
+            type="submit"
+            disabled={busy}
+            className="w-full font-mono text-xs uppercase tracking-widest"
+          >
             {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
           </Button>
         </form>
@@ -216,9 +219,7 @@ function AuthPage() {
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           className="mt-6 w-full text-center text-xs text-muted-foreground underline-offset-4 hover:underline"
         >
-          {mode === "signin"
-            ? "No account yet? Create one"
-            : "Already have an account? Sign in"}
+          {mode === "signin" ? "No account yet? Create one" : "Already have an account? Sign in"}
         </button>
       </div>
     </div>

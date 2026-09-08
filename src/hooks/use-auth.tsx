@@ -12,10 +12,15 @@ export function useAuth() {
       setSession(next);
       setLoading(false);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        setSession(data?.session ?? null);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
     return () => subscription.subscription.unsubscribe();
   }, []);
 

@@ -17,7 +17,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
           "Live counts of sources, artefacts awaiting review, verified and flagged claims across your workspace.",
       },
       { property: "og:title", content: "Operator dashboard — INTELLI-FORGE" },
-      { property: "og:description", content: "Live status of your content transformation pipeline." },
+      {
+        property: "og:description",
+        content: "Live status of your content transformation pipeline.",
+      },
     ],
   }),
   component: Dashboard,
@@ -25,10 +28,15 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 async function loadDashboard() {
   const [sources, outputs, claims, conflicts, audit] = await Promise.all([
-    supabase.from("sources").select("id, title, status, created_at, is_demo").order("created_at", { ascending: false }),
+    supabase
+      .from("sources")
+      .select("id, title, status, created_at, is_demo")
+      .order("created_at", { ascending: false }),
     supabase
       .from("outputs")
-      .select("id, output_type, audience, status, verification_status, evidence_coverage, created_at, source_id")
+      .select(
+        "id, output_type, audience, status, verification_status, evidence_coverage, created_at, source_id",
+      )
       .order("created_at", { ascending: false }),
     supabase.from("output_claims").select("id, grounded"),
     supabase.from("fact_conflicts").select("id, status"),
@@ -105,9 +113,7 @@ function Dashboard() {
 
       <div className="grid gap-6 p-6 lg:grid-cols-2">
         <section className="rounded-sm border border-border bg-surface">
-          <h2 className="border-b border-border px-5 py-3 text-sm font-semibold">
-            Recent sources
-          </h2>
+          <h2 className="border-b border-border px-5 py-3 text-sm font-semibold">Recent sources</h2>
           <div className="divide-y divide-border">
             {(data?.sources ?? []).slice(0, 6).map((source) => (
               <Link
@@ -151,15 +157,15 @@ function Dashboard() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm text-foreground">{output.output_type}</p>
-                  <p className="label-mono mt-0.5">{output.audience} · {output.status}</p>
+                  <p className="label-mono mt-0.5">
+                    {output.audience} · {output.status}
+                  </p>
                 </div>
                 <TrustBadge state={output.verification_status} />
               </Link>
             ))}
             {!isLoading && outputs.length === 0 && (
-              <p className="px-5 py-6 text-sm text-muted-foreground">
-                No artefacts generated yet.
-              </p>
+              <p className="px-5 py-6 text-sm text-muted-foreground">No artefacts generated yet.</p>
             )}
           </div>
         </section>

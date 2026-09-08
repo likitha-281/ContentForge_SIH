@@ -149,7 +149,9 @@ export const verifyAuditChain = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: events, error } = await supabase
       .from("audit_events")
-      .select("id, actor, action, entity_type, entity_id, detail, payload, prev_hash, hash, created_at")
+      .select(
+        "id, actor, action, entity_type, entity_id, detail, payload, prev_hash, hash, created_at",
+      )
       .eq("user_id", userId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);

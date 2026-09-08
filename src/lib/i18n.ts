@@ -42,7 +42,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "brand.title": "INTELLI-FORGE",
     "brand.tagline": "Verified content transformation",
     "brand.sih": "SIH 2026 · PS 26154",
-    
+
     // Navigation
     "nav.dashboard": "Dashboard",
     "nav.upload": "Upload source",
@@ -75,7 +75,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Upload
     "upload.eyebrow": "Stage 1 · Intake",
     "upload.title": "Upload source",
-    "upload.desc": "What did I receive? Bring in the material, then INTELLI-FORGE parses, understands and locks its facts.",
+    "upload.desc":
+      "What did I receive? Bring in the material, then INTELLI-FORGE parses, understands and locks its facts.",
     "upload.loadDemo": "Load sample scenario",
     "upload.sourceTitle": "Source title",
     "upload.sourceKind": "Source kind",
@@ -115,7 +116,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Human Review
     "review.eyebrow": "Stage 7 · Human Control",
     "review.title": "Human review & approval queue",
-    "review.desc": "Reviewer gate: verify facts, inspect claim traces, and approve for distribution.",
+    "review.desc":
+      "Reviewer gate: verify facts, inspect claim traces, and approve for distribution.",
     "review.tabAll": "All artefacts",
     "review.tabPending": "Awaiting review",
     "review.tabApproved": "Approved",
@@ -124,12 +126,14 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "review.approve": "Approve for release",
     "review.reject": "Reject",
     "review.notes": "Reviewer notes",
-    "review.blockedWarning": "Approval blocked: Unresolved fact conflicts must be corrected before release.",
+    "review.blockedWarning":
+      "Approval blocked: Unresolved fact conflicts must be corrected before release.",
 
     // Distribution
     "dist.eyebrow": "Stage 8 · Distribution Readiness",
     "dist.title": "Distribution packages",
-    "dist.desc": "Export approved communication packages across channels with cryptographic proofs.",
+    "dist.desc":
+      "Export approved communication packages across channels with cryptographic proofs.",
     "dist.selectArtefact": "Select approved artefact",
     "dist.selectChannel": "Target channel",
     "dist.web": "Web Portal (HTML / Embed)",
@@ -163,7 +167,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "brand.title": "इंटेली-फोर्ज",
     "brand.tagline": "सत्यापित सामग्री रूपांतरण प्रणाली",
     "brand.sih": "स्मार्ट इंडिया हैकाथॉन 2026",
-    
+
     "nav.dashboard": "डैशबोर्ड",
     "nav.upload": "स्रोत अपलोड",
     "nav.outputs": "उत्पन्न आउटपुट",
@@ -193,7 +197,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     "upload.eyebrow": "चरण 1 · स्रोत प्राप्ति",
     "upload.title": "स्रोत दस्तावेज़ अपलोड करें",
-    "upload.desc": "दस्तावेज़ प्राप्त करें; इंटेली-फोर्ज इसका विश्लेषण, तथ्यों की पहचान और उन्हें लॉक करेगा।",
+    "upload.desc":
+      "दस्तावेज़ प्राप्त करें; इंटेली-फोर्ज इसका विश्लेषण, तथ्यों की पहचान और उन्हें लॉक करेगा।",
     "upload.loadDemo": "नमूना परिदृश्य लोड करें",
     "upload.sourceTitle": "स्रोत शीर्षक",
     "upload.sourceKind": "स्रोत प्रकार",
@@ -230,7 +235,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     "review.eyebrow": "चरण 7 · मानवीय नियंत्रण",
     "review.title": "मानव समीक्षा एवं अनुमोदन कतार",
-    "review.desc": "समीक्षक नियंत्रण: तथ्यों की पुष्टि करें, दावों की जांच करें और वितरण हेतु स्वीकृत करें।",
+    "review.desc":
+      "समीक्षक नियंत्रण: तथ्यों की पुष्टि करें, दावों की जांच करें और वितरण हेतु स्वीकृत करें।",
     "review.tabAll": "सभी आउटपुट",
     "review.tabPending": "समीक्षा हेतु लंबित",
     "review.tabApproved": "स्वीकृत",
@@ -243,7 +249,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
 
     "dist.eyebrow": "चरण 8 · वितरण तैयारी",
     "dist.title": "वितरण पैकेज",
-    "dist.desc": "स्वीकृत संचार पैकेजों को विभिन्न चैनलों पर क्रिप्टोग्राफ़िक प्रमाण के साथ निर्यात करें।",
+    "dist.desc":
+      "स्वीकृत संचार पैकेजों को विभिन्न चैनलों पर क्रिप्टोग्राफ़िक प्रमाण के साथ निर्यात करें।",
     "dist.selectArtefact": "स्वीकृत दस्तावेज़ चुनें",
     "dist.selectChannel": "लक्षित चैनल",
     "dist.web": "वेब पोर्टल (HTML / एम्बेड)",

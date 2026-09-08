@@ -31,7 +31,8 @@ export const Route = createFileRoute("/_authenticated/audit")({
       { title: "Audit Trail & Cryptographic Verification — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Immutable, SHA-256 hash-chained audit trail. Verify every operator edit, fact lock, and distribution event.",
+        content:
+          "Immutable, SHA-256 hash-chained audit trail. Verify every operator edit, fact lock, and distribution event.",
       },
     ],
   }),
@@ -56,7 +57,9 @@ function AuditPage() {
       const [eventsRes, outputsRes, claimsRes] = await Promise.all([
         supabase
           .from("audit_events")
-          .select("id, actor, action, entity_type, entity_id, detail, payload, prev_hash, hash, created_at")
+          .select(
+            "id, actor, action, entity_type, entity_id, detail, payload, prev_hash, hash, created_at",
+          )
           .order("created_at", { ascending: false }),
         supabase.from("outputs").select("id, status, evidence_coverage"),
         supabase.from("output_claims").select("id, grounded"),
@@ -99,7 +102,8 @@ function AuditPage() {
       (e.detail && e.detail.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (e.entity_id && e.entity_id.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesActor = actorFilter === "all" || e.actor.toLowerCase() === actorFilter.toLowerCase();
+    const matchesActor =
+      actorFilter === "all" || e.actor.toLowerCase() === actorFilter.toLowerCase();
     return matchesSearch && matchesActor;
   });
 
@@ -115,7 +119,17 @@ function AuditPage() {
   };
 
   const exportCSV = () => {
-    const headers = ["ID", "Timestamp", "Actor", "Action", "Entity Type", "Entity ID", "Detail", "Prev Hash", "Hash"];
+    const headers = [
+      "ID",
+      "Timestamp",
+      "Actor",
+      "Action",
+      "Entity Type",
+      "Entity ID",
+      "Detail",
+      "Prev Hash",
+      "Hash",
+    ];
     const rows = events.map((e) => [
       e.id,
       e.created_at,
@@ -152,21 +166,11 @@ function AuditPage() {
         description="Every action, edit, and decision is cryptographically hash-chained (SHA-256). Updates and deletes are blocked by database trigger."
         actions={
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportCSV}
-              className="text-xs"
-            >
+            <Button variant="outline" size="sm" onClick={exportCSV} className="text-xs">
               <Download className="size-3.5 mr-1" />
               CSV
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportJSON}
-              className="text-xs"
-            >
+            <Button variant="outline" size="sm" onClick={exportJSON} className="text-xs">
               <Download className="size-3.5 mr-1" />
               JSON
             </Button>
@@ -200,7 +204,9 @@ function AuditPage() {
             Grounding Assurance
           </p>
           <p className="mt-2 font-mono text-3xl text-verified">{avgCoverage}%</p>
-          <p className="mt-1 text-[11px] text-muted-foreground">{groundedClaims} / {totalClaims} claims verified</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {groundedClaims} / {totalClaims} claims verified
+          </p>
         </div>
 
         <div className="bg-background p-6">
@@ -250,7 +256,9 @@ function AuditPage() {
             </span>
           </div>
           <p className="mt-1 text-muted-foreground">
-            Every block's <code>hash</code> matches <code>SHA-256(prev_hash + actor + action + payload)</code> sequentially from Genesis block to the latest entry.
+            Every block's <code>hash</code> matches{" "}
+            <code>SHA-256(prev_hash + actor + action + payload)</code> sequentially from Genesis
+            block to the latest entry.
           </p>
         </div>
       )}
@@ -302,9 +310,7 @@ function AuditPage() {
                 <span className="font-mono text-xs font-semibold text-ember">
                   #{events.length - idx}
                 </span>
-                <span className="font-mono text-xs font-medium text-foreground">
-                  {evt.action}
-                </span>
+                <span className="font-mono text-xs font-medium text-foreground">{evt.action}</span>
                 <span className="rounded bg-surface-raised px-2 py-0.5 font-mono text-[10px] text-muted-foreground uppercase">
                   {evt.actor}
                 </span>

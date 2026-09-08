@@ -31,7 +31,8 @@ export const Route = createFileRoute("/_authenticated/review")({
       { title: "Human Review & Approval Queue — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Human-in-the-loop review gate. Verify fact locks, inspect claim traces, and approve artefacts for distribution.",
+        content:
+          "Human-in-the-loop review gate. Verify fact locks, inspect claim traces, and approve artefacts for distribution.",
       },
     ],
   }),
@@ -53,10 +54,14 @@ function ReviewPage() {
       const [outputsRes, sourcesRes, conflictsRes] = await Promise.all([
         supabase
           .from("outputs")
-          .select("id, source_id, output_type, audience, tone, content, status, verification_status, evidence_coverage, created_at, updated_at")
+          .select(
+            "id, source_id, output_type, audience, tone, content, status, verification_status, evidence_coverage, created_at, updated_at",
+          )
           .order("created_at", { ascending: false }),
         supabase.from("sources").select("id, title"),
-        supabase.from("fact_conflicts").select("id, output_id, fact_label, locked_value, generated_text, status"),
+        supabase
+          .from("fact_conflicts")
+          .select("id, output_id, fact_label, locked_value, generated_text, status"),
       ]);
 
       const sourcesMap = new Map((sourcesRes.data ?? []).map((s) => [s.id, s.title]));
@@ -100,7 +105,9 @@ function ReviewPage() {
           notes: reviewerNotes.trim() || undefined,
         },
       });
-      toast.success(action === "approve" ? "Artefact approved for distribution." : "Artefact rejected.");
+      toast.success(
+        action === "approve" ? "Artefact approved for distribution." : "Artefact rejected.",
+      );
       setReviewerNotes("");
       setSelectedOutputId(null);
     } catch (err) {
@@ -244,7 +251,8 @@ function ReviewPage() {
                       )}
                     </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Audience: <span className="text-foreground">{item.audience}</span> · Source: {item.sourceTitle}
+                      Audience: <span className="text-foreground">{item.audience}</span> · Source:{" "}
+                      {item.sourceTitle}
                     </p>
                   </div>
                   <TrustBadge state={item.verification_status} />
@@ -255,7 +263,9 @@ function ReviewPage() {
                     <span>
                       Coverage:{" "}
                       <strong className="text-foreground font-mono">
-                        {item.evidence_coverage != null ? `${Math.round(item.evidence_coverage)}%` : "N/A"}
+                        {item.evidence_coverage != null
+                          ? `${Math.round(item.evidence_coverage)}%`
+                          : "N/A"}
                       </strong>
                     </span>
                     <span className="capitalize">
@@ -304,10 +314,13 @@ function ReviewPage() {
                 <div className="rounded border border-conflict/40 bg-conflict/10 p-4 text-xs text-conflict">
                   <div className="flex items-center gap-2 font-semibold">
                     <AlertTriangle className="size-4 shrink-0" />
-                    <span>Approval Gate Blocked ({selectedItem.openConflicts.length} Conflict)</span>
+                    <span>
+                      Approval Gate Blocked ({selectedItem.openConflicts.length} Conflict)
+                    </span>
                   </div>
                   <p className="mt-1 text-muted-foreground">
-                    This artefact contradicts locked facts from the source. You must resolve or formally override the conflict before approval can be granted.
+                    This artefact contradicts locked facts from the source. You must resolve or
+                    formally override the conflict before approval can be granted.
                   </p>
                   <div className="mt-3">
                     <Link
@@ -376,7 +389,9 @@ function ReviewPage() {
           ) : (
             <div className="flex min-h-[400px] flex-col items-center justify-center text-center p-6">
               <ListChecks className="size-10 text-muted-foreground/40" />
-              <p className="mt-3 text-sm font-medium text-foreground">Select an artefact from the queue</p>
+              <p className="mt-3 text-sm font-medium text-foreground">
+                Select an artefact from the queue
+              </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Inspect content, verify fact-lock enforcement, and grant distribution sign-off.
               </p>

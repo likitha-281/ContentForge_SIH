@@ -23,7 +23,10 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         <span className="font-mono text-xs">{currentLanguageInfo.nativeName}</span>
         <Globe className="size-3 text-muted-foreground ml-0.5 opacity-70" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="max-h-72 overflow-y-auto border-border bg-surface">
+      <DropdownMenuContent
+        align="end"
+        className="max-h-72 overflow-y-auto border-border bg-surface"
+      >
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}

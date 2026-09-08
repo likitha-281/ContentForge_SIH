@@ -47,11 +47,7 @@ async function upsertCheck(
  * The Trust & Quality Engine. Every check below is computed from the actual
  * generated text against the actual indexed source — no scores are invented.
  */
-export async function runVerification(
-  supabase: SupabaseClient,
-  userId: string,
-  outputId: string,
-) {
+export async function runVerification(supabase: SupabaseClient, userId: string, outputId: string) {
   const { data: output, error } = await supabase
     .from("outputs")
     .select("id, source_id, content, output_type, audience, tone, request_id")
@@ -218,17 +214,14 @@ export async function runVerification(
         },
         {
           role: "user",
-          content:
-            `LOCKED FACTS:\n${lockedFacts.map((f) => `- ${f.label}: ${f.value}`).join("\n")}\n\nDRAFT:\n${output.content}`,
+          content: `LOCKED FACTS:\n${lockedFacts.map((f) => `- ${f.label}: ${f.value}`).join("\n")}\n\nDRAFT:\n${output.content}`,
         },
       ],
       { model: MODELS.reasoning, fallback: { conflicts: [] } },
     );
 
     for (const c of verdict.conflicts ?? []) {
-      const fact = lockedFacts.find(
-        (f) => f.label.toLowerCase() === (c.label ?? "").toLowerCase(),
-      );
+      const fact = lockedFacts.find((f) => f.label.toLowerCase() === (c.label ?? "").toLowerCase());
       conflicts.push({
         fact_id: fact?.id ?? null,
         fact_label: c.label,
@@ -243,7 +236,10 @@ export async function runVerification(
     for (const fact of lockedFacts) {
       const lockedNumbers = extractNumbers(fact.value);
       if (lockedNumbers.length === 0) continue;
-      const keyword = fact.label.toLowerCase().split(/\s+/).filter((w) => w.length > 4)[0];
+      const keyword = fact.label
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((w) => w.length > 4)[0];
       if (!keyword) continue;
       for (const sentence of sentences) {
         const lower = sentence.toLowerCase();
@@ -265,9 +261,11 @@ export async function runVerification(
   }
 
   if (conflicts.length > 0) {
-    await supabase.from("fact_conflicts").insert(
-      conflicts.map((c) => ({ ...c, user_id: userId, output_id: outputId, status: "open" })),
-    );
+    await supabase
+      .from("fact_conflicts")
+      .insert(
+        conflicts.map((c) => ({ ...c, user_id: userId, output_id: outputId, status: "open" })),
+      );
   }
 
   await upsertCheck(supabase, userId, outputId, {
@@ -296,7 +294,10 @@ export async function runVerification(
         content: `Audience: ${output.audience}\nTone: ${output.tone ?? "unspecified"}\nArtefact: ${output.output_type}\n\nDRAFT:\n${output.content}`,
       },
     ],
-    { model: MODELS.reasoning, fallback: { verdict: "warn", reason: "Audience check unavailable." } },
+    {
+      model: MODELS.reasoning,
+      fallback: { verdict: "warn", reason: "Audience check unavailable." },
+    },
   );
   await upsertCheck(supabase, userId, outputId, {
     key: "audience",

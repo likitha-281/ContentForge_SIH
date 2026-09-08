@@ -26,7 +26,9 @@ function OutputsPage() {
     async () => {
       const { data } = await supabase
         .from("outputs")
-        .select("id, output_type, audience, status, verification_status, evidence_coverage, created_at")
+        .select(
+          "id, output_type, audience, status, verification_status, evidence_coverage, created_at",
+        )
         .order("created_at", { ascending: false });
       return data ?? [];
     },
@@ -50,10 +52,14 @@ function OutputsPage() {
           >
             <div className="min-w-0 flex-1">
               <p className="text-sm text-foreground">{output.output_type}</p>
-              <p className="label-mono mt-0.5">{output.audience} · {output.status}</p>
+              <p className="label-mono mt-0.5">
+                {output.audience} · {output.status}
+              </p>
             </div>
             <span className="font-mono text-xs text-muted-foreground">
-              {output.evidence_coverage == null ? "—" : `${Math.round(output.evidence_coverage)}% traced`}
+              {output.evidence_coverage == null
+                ? "—"
+                : `${Math.round(output.evidence_coverage)}% traced`}
             </span>
             <TrustBadge state={output.verification_status} />
           </Link>

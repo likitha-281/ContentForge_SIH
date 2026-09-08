@@ -108,7 +108,8 @@ export const Route = createFileRoute("/api/generate")({
                   })
                   .select("id")
                   .single();
-                if (error || !output) throw new Error(error?.message ?? "Could not create artefact");
+                if (error || !output)
+                  throw new Error(error?.message ?? "Could not create artefact");
 
                 send({
                   type: "output_started",
@@ -134,7 +135,9 @@ export const Route = createFileRoute("/api/generate")({
                   `SOURCE PASSAGES:\n${evidence}\n\n` +
                   `TASK: Produce a ${artefact.outputType} for a ${artefact.audience} audience.\n` +
                   `Tone: ${artefact.tone}. Detail level: ${artefact.detail}. Objective: ${artefact.objective}. Language: ${body.language ?? "English"}.\n` +
-                  (body.instructions ? `Additional operator instructions: ${body.instructions}\n` : "");
+                  (body.instructions
+                    ? `Additional operator instructions: ${body.instructions}\n`
+                    : "");
 
                 let content = "";
                 let sinceFlush = 0;

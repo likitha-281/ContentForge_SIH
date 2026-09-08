@@ -27,7 +27,8 @@ export const Route = createFileRoute("/_authenticated/settings")({
       { title: "Security & Workspace Policy — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Security posture, Row-Level Security isolation, cryptographic verification tokens, and scalability architecture.",
+        content:
+          "Security posture, Row-Level Security isolation, cryptographic verification tokens, and scalability architecture.",
       },
     ],
   }),
@@ -75,22 +76,36 @@ function SettingsPage() {
 
           <div className="text-xs space-y-2">
             <p className="text-muted-foreground">
-              Authenticated Session Account: <strong className="text-foreground">{user?.email}</strong>
+              Authenticated Session Account:{" "}
+              <strong className="text-foreground">{user?.email}</strong>
             </p>
             <p className="font-mono text-[11px] text-muted-foreground">
               User UID: <code>{user?.id}</code>
             </p>
             <p className="text-muted-foreground leading-relaxed pt-2">
-              Every source, passage chunk, locked fact, artefact, and audit event is strictly bound to this account via PostgreSQL Row-Level Security (RLS) policies. No other tenant or operator can read or modify your workspace.
+              Every source, passage chunk, locked fact, artefact, and audit event is strictly bound
+              to this account via PostgreSQL Row-Level Security (RLS) policies. No other tenant or
+              operator can read or modify your workspace.
             </p>
           </div>
 
           <div className="rounded border border-border/60 bg-background p-3 text-xs space-y-2">
-            <span className="font-mono text-[10px] text-ember uppercase">Active Security Policies</span>
+            <span className="font-mono text-[10px] text-ember uppercase">
+              Active Security Policies
+            </span>
             <ul className="space-y-1 text-muted-foreground text-[11px]">
-              <li>✓ <strong>Fact Drift Lock:</strong> Contradicting locked facts blocks downstream approval.</li>
-              <li>✓ <strong>Mandatory Re-verification:</strong> Any human edit invalidates previous trust states.</li>
-              <li>✓ <strong>Tamper-Proof Audit:</strong> PostgreSQL trigger forbids <code>UPDATE</code> or <code>DELETE</code> on audit events.</li>
+              <li>
+                ✓ <strong>Fact Drift Lock:</strong> Contradicting locked facts blocks downstream
+                approval.
+              </li>
+              <li>
+                ✓ <strong>Mandatory Re-verification:</strong> Any human edit invalidates previous
+                trust states.
+              </li>
+              <li>
+                ✓ <strong>Tamper-Proof Audit:</strong> PostgreSQL trigger forbids{" "}
+                <code>UPDATE</code> or <code>DELETE</code> on audit events.
+              </li>
             </ul>
           </div>
         </section>
@@ -131,10 +146,21 @@ function SettingsPage() {
 
           <div className="rounded border border-border bg-background p-3 text-xs space-y-1 text-muted-foreground">
             <p className="font-semibold text-foreground">Role Permissions:</p>
-            <p>• Create &amp; analyze sources: <strong className="text-foreground">OPERATOR, ADMIN</strong></p>
-            <p>• Lock &amp; unlock facts: <strong className="text-foreground">OPERATOR, ADMIN</strong></p>
-            <p>• Approve / Reject for distribution: <strong className="text-foreground">REVIEWER, ADMIN</strong></p>
-            <p>• Verify SHA-256 audit ledger: <strong className="text-foreground">ALL ROLES</strong></p>
+            <p>
+              • Create &amp; analyze sources:{" "}
+              <strong className="text-foreground">OPERATOR, ADMIN</strong>
+            </p>
+            <p>
+              • Lock &amp; unlock facts:{" "}
+              <strong className="text-foreground">OPERATOR, ADMIN</strong>
+            </p>
+            <p>
+              • Approve / Reject for distribution:{" "}
+              <strong className="text-foreground">REVIEWER, ADMIN</strong>
+            </p>
+            <p>
+              • Verify SHA-256 audit ledger: <strong className="text-foreground">ALL ROLES</strong>
+            </p>
           </div>
         </section>
 
@@ -189,19 +215,25 @@ function SettingsPage() {
             <li className="flex items-start gap-2">
               <span className="text-ember font-mono font-semibold">•</span>
               <span>
-                <strong className="text-foreground">Sliding-Window Recursive Chunking:</strong> Handles massive documents (100,000+ words / multi-megabyte files) without hitting token limits or losing passage boundaries.
+                <strong className="text-foreground">Sliding-Window Recursive Chunking:</strong>{" "}
+                Handles massive documents (100,000+ words / multi-megabyte files) without hitting
+                token limits or losing passage boundaries.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-ember font-mono font-semibold">•</span>
               <span>
-                <strong className="text-foreground">PostgreSQL GIN tsvector Indexing:</strong> Sub-millisecond keyword and entity retrieval even across tens of thousands of document passages.
+                <strong className="text-foreground">PostgreSQL GIN tsvector Indexing:</strong>{" "}
+                Sub-millisecond keyword and entity retrieval even across tens of thousands of
+                document passages.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-ember font-mono font-semibold">•</span>
               <span>
-                <strong className="text-foreground">Asynchronous Stage Processing:</strong> Processing jobs run asynchronously with real-time SSE delta streaming to prevent browser UI blocking.
+                <strong className="text-foreground">Asynchronous Stage Processing:</strong>{" "}
+                Processing jobs run asynchronously with real-time SSE delta streaming to prevent
+                browser UI blocking.
               </span>
             </li>
           </ul>

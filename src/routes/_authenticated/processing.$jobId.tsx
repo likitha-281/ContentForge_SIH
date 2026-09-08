@@ -17,10 +17,14 @@ export const Route = createFileRoute("/_authenticated/processing/$jobId")({
       { title: "Processing & understanding — INTELLI-FORGE" },
       {
         name: "description",
-        content: "Watch each pipeline stage complete live: parsing, understanding, fact lock, indexing.",
+        content:
+          "Watch each pipeline stage complete live: parsing, understanding, fact lock, indexing.",
       },
       { property: "og:title", content: "Processing & understanding — INTELLI-FORGE" },
-      { property: "og:description", content: "Live view of the INTELLI-FORGE understanding pipeline." },
+      {
+        property: "og:description",
+        content: "Live view of the INTELLI-FORGE understanding pipeline.",
+      },
     ],
   }),
   component: ProcessingPage,
@@ -44,8 +48,15 @@ function ProcessingPage() {
         .single();
       if (!job) return null;
       const [source, facts, claims, entities] = await Promise.all([
-        supabase.from("sources").select("id, title, summary, status, is_demo").eq("id", job.source_id).single(),
-        supabase.from("facts").select("id, label, value, is_locked, locator").eq("source_id", job.source_id),
+        supabase
+          .from("sources")
+          .select("id, title, summary, status, is_demo")
+          .eq("id", job.source_id)
+          .single(),
+        supabase
+          .from("facts")
+          .select("id, label, value, is_locked, locator")
+          .eq("source_id", job.source_id),
         supabase.from("claims").select("id, text, locator").eq("source_id", job.source_id),
         supabase.from("entities").select("id, name, entity_type").eq("source_id", job.source_id),
       ]);

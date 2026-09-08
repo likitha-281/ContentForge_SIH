@@ -1,0 +1,6 @@
+{
+  "name": "INTELLI-FORGE",
+  "description": "Automated content transformation with fact locking, claim-level evidence tracing, and a human approval gate.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

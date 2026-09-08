@@ -4,9 +4,51 @@
 export type Chunk = { ordinal: number; locator: string; content: string; byteOffset?: number };
 
 const STOP = new Set([
-  "the","a","an","of","and","or","to","in","on","for","with","is","are","was","were","be","been",
-  "by","at","as","that","this","it","its","from","has","have","had","not","no","which","their",
-  "there","were","will","would","can","could","should","may","also","than","then","these","those",
+  "the",
+  "a",
+  "an",
+  "of",
+  "and",
+  "or",
+  "to",
+  "in",
+  "on",
+  "for",
+  "with",
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "by",
+  "at",
+  "as",
+  "that",
+  "this",
+  "it",
+  "its",
+  "from",
+  "has",
+  "have",
+  "had",
+  "not",
+  "no",
+  "which",
+  "their",
+  "there",
+  "were",
+  "will",
+  "would",
+  "can",
+  "could",
+  "should",
+  "may",
+  "also",
+  "than",
+  "then",
+  "these",
+  "those",
 ]);
 
 const MAX_CHUNK_CHARS = 1200;
@@ -26,7 +68,9 @@ export function chunkDocument(text: string): Chunk[] {
   for (const block of blocks) {
     const trimmed = block.trim();
     // Detect headings or structured markers (e.g. "Section 1", "1. Overview", "CHAPTER 2", etc.)
-    const heading = trimmed.match(/^(?:section\s+\d+|[0-9]+\.\s+[A-Z\s]+|chapter\s+\d+|article\s+\d+)[.:)]?\s*[^\n]*/i);
+    const heading = trimmed.match(
+      /^(?:section\s+\d+|[0-9]+\.\s+[A-Z\s]+|chapter\s+\d+|article\s+\d+)[.:)]?\s*[^\n]*/i,
+    );
     if (heading) {
       currentSection = heading[0].replace(/\s+/g, " ").trim().slice(0, 40);
       paragraphInSection = 0;
@@ -67,7 +111,9 @@ export function chunkDocument(text: string): Chunk[] {
     }
   }
 
-  return chunks.length > 0 ? chunks : [{ ordinal: 0, locator: "[P1]", content: normalised.slice(0, MAX_CHUNK_CHARS) }];
+  return chunks.length > 0
+    ? chunks
+    : [{ ordinal: 0, locator: "[P1]", content: normalised.slice(0, MAX_CHUNK_CHARS) }];
 }
 
 export function splitSentences(text: string): string[] {

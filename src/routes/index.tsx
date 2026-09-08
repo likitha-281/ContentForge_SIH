@@ -19,7 +19,10 @@ export const Route = createFileRoute("/")({
         content:
           "One source, many audiences, every claim traceable. INTELLI-FORGE turns reports and advisories into audience-ready artefacts with fact locking, evidence tracing and a human approval gate.",
       },
-      { property: "og:title", content: "INTELLI-FORGE — Transform Faster. Verify Before You Trust." },
+      {
+        property: "og:title",
+        content: "INTELLI-FORGE — Transform Faster. Verify Before You Trust.",
+      },
       {
         property: "og:description",
         content:
@@ -95,7 +98,9 @@ function Landing() {
 
       <section className="grid-backdrop border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-24">
-          <p className="label-mono">Smart India Hackathon 2026 · PS 26154 · Gen AI content transformation</p>
+          <p className="label-mono">
+            Smart India Hackathon 2026 · PS 26154 · Gen AI content transformation
+          </p>
           <h1 className="mt-6 max-w-3xl text-5xl leading-[1.05] font-semibold text-foreground md:text-6xl">
             Transform faster.
             <br />

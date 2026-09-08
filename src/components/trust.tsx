@@ -4,10 +4,7 @@ import { cn } from "@/lib/utils";
 
 export type TrustState = "unverified" | "verifying" | "verified" | "attention" | "failed";
 
-const MAP: Record<
-  TrustState,
-  { label: string; className: string; Icon: typeof ShieldCheck }
-> = {
+const MAP: Record<TrustState, { label: string; className: string; Icon: typeof ShieldCheck }> = {
   unverified: {
     label: "Unverified",
     className: "text-muted-foreground border-border",

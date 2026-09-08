@@ -33,14 +33,39 @@ function generateDeterministicFallback(messages: ChatMessage[], isJson = false):
   // 1. Content understanding fallback
   if (sysContent.includes("content-understanding")) {
     const lines = content.split("\n").filter((l) => l.trim().length > 0);
-    const summary = lines.slice(0, 2).join(" ").slice(0, 300) || "Document content extracted and analysed.";
-    
+    const summary =
+      lines.slice(0, 2).join(" ").slice(0, 300) || "Document content extracted and analysed.";
+
     // Extract key facts and entities
     const facts = [
-      { label: "Incident Severity", value: "Critical / Level 4 Advisory", critical: true, quote: lines[0] || summary },
-      { label: "Date of Incident", value: new Date().toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" }), critical: true, quote: lines[1] || summary },
-      { label: "Affected Scope", value: "Primary Infrastructure Systems", critical: true, quote: lines[0] || summary },
-      { label: "Action Mandate", value: "Isolate affected nodes and apply remediation patches immediately", critical: true, quote: lines[lines.length - 1] || summary },
+      {
+        label: "Incident Severity",
+        value: "Critical / Level 4 Advisory",
+        critical: true,
+        quote: lines[0] || summary,
+      },
+      {
+        label: "Date of Incident",
+        value: new Date().toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+        critical: true,
+        quote: lines[1] || summary,
+      },
+      {
+        label: "Affected Scope",
+        value: "Primary Infrastructure Systems",
+        critical: true,
+        quote: lines[0] || summary,
+      },
+      {
+        label: "Action Mandate",
+        value: "Isolate affected nodes and apply remediation patches immediately",
+        critical: true,
+        quote: lines[lines.length - 1] || summary,
+      },
     ];
 
     const claims = lines.slice(0, 5).map((line) => ({
@@ -65,26 +90,30 @@ function generateDeterministicFallback(messages: ChatMessage[], isJson = false):
           audience: "Executive Leadership",
           tone: "Formal & High-Level",
           detail: "Brief",
-          objective: "Brief executive leadership on threat impact, required resource allocations, and regulatory posture.",
+          objective:
+            "Brief executive leadership on threat impact, required resource allocations, and regulatory posture.",
           outputType: "Executive Brief",
         },
         {
           audience: "Technical SOC Team",
           tone: "Urgent & Highly Detailed",
           detail: "Detailed",
-          objective: "Provide actionable technical indicators, patch procedures, and forensic containment steps.",
+          objective:
+            "Provide actionable technical indicators, patch procedures, and forensic containment steps.",
           outputType: "Technical Advisory",
         },
         {
           audience: "General Public & Media",
           tone: "Clear & Reassuring",
           detail: "Moderate",
-          objective: "Provide transparent safety guidelines and counter misinformation without causing panic.",
+          objective:
+            "Provide transparent safety guidelines and counter misinformation without causing panic.",
           outputType: "Public Notice",
         },
       ],
       language: "English",
-      notes: "Inferred 3 key stakeholders (Executive, Technical, Public) with strict fact-locking requirements.",
+      notes:
+        "Inferred 3 key stakeholders (Executive, Technical, Public) with strict fact-locking requirements.",
     });
   }
 

@@ -27,11 +27,31 @@ interface CopilotMessage {
 }
 
 const QUICK_ACTIONS = [
-  { id: "conflicts", label: "Check Fact Conflicts", prompt: "Are there any open fact conflicts or contradictions in the current draft?" },
-  { id: "locked", label: "List Locked Values", prompt: "List all critical locked facts and their exact source locators." },
-  { id: "grounding", label: "Analyze Grounding", prompt: "What percentage of sentences are grounded and are there unsupported claims?" },
-  { id: "hindi", label: "Translate to Hindi", prompt: "Translate the executive summary and key advisory points into Hindi (हिंदी)." },
-  { id: "tone", label: "Evaluate Tone & Audience", prompt: "How well is the tone tailored for executive vs technical audiences?" },
+  {
+    id: "conflicts",
+    label: "Check Fact Conflicts",
+    prompt: "Are there any open fact conflicts or contradictions in the current draft?",
+  },
+  {
+    id: "locked",
+    label: "List Locked Values",
+    prompt: "List all critical locked facts and their exact source locators.",
+  },
+  {
+    id: "grounding",
+    label: "Analyze Grounding",
+    prompt: "What percentage of sentences are grounded and are there unsupported claims?",
+  },
+  {
+    id: "hindi",
+    label: "Translate to Hindi",
+    prompt: "Translate the executive summary and key advisory points into Hindi (हिंदी).",
+  },
+  {
+    id: "tone",
+    label: "Evaluate Tone & Audience",
+    prompt: "How well is the tone tailored for executive vs technical audiences?",
+  },
 ];
 
 export function ForgeCopilot() {
@@ -189,7 +209,11 @@ export function ForgeCopilot() {
                 className="rounded p-1 hover:bg-surface hover:text-foreground"
                 title={isExpanded ? "Collapse" : "Expand"}
               >
-                {isExpanded ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
+                {isExpanded ? (
+                  <Minimize2 className="size-3.5" />
+                ) : (
+                  <Maximize2 className="size-3.5" />
+                )}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
