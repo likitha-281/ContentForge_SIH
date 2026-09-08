@@ -1,0 +1,126 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * INTELLI-FORGE design system.
+ * Dark operations-console palette: graphite surfaces, ember accent,
+ * signal colours reserved for trust states (verified / attention / conflict).
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-ember: var(--ember);
+  --color-ember-foreground: var(--ember-foreground);
+  --color-verified: var(--verified);
+  --color-attention: var(--attention);
+  --color-conflict: var(--conflict);
+  --color-chart-1: var(--verified);
+  --color-chart-2: var(--ember);
+  --color-chart-3: var(--attention);
+  --color-chart-4: var(--conflict);
+  --color-chart-5: var(--muted-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--ember);
+  --color-sidebar-primary-foreground: var(--ember-foreground);
+  --color-sidebar-accent: var(--surface-raised);
+  --color-sidebar-accent-foreground: var(--foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.35rem;
+  --background: oklch(0.17 0.012 260);
+  --foreground: oklch(0.93 0.008 250);
+  --surface: oklch(0.21 0.013 260);
+  --surface-raised: oklch(0.25 0.014 260);
+  --card: oklch(0.21 0.013 260);
+  --card-foreground: oklch(0.93 0.008 250);
+  --popover: oklch(0.21 0.013 260);
+  --popover-foreground: oklch(0.93 0.008 250);
+  --primary: oklch(0.72 0.16 55);
+  --primary-foreground: oklch(0.18 0.02 60);
+  --secondary: oklch(0.27 0.014 260);
+  --secondary-foreground: oklch(0.93 0.008 250);
+  --muted: oklch(0.25 0.012 260);
+  --muted-foreground: oklch(0.68 0.012 255);
+  --accent: oklch(0.28 0.016 260);
+  --accent-foreground: oklch(0.95 0.008 250);
+  --destructive: oklch(0.6 0.2 24);
+  --destructive-foreground: oklch(0.97 0.01 250);
+  --border: oklch(0.31 0.014 260);
+  --input: oklch(0.31 0.014 260);
+  --ring: oklch(0.72 0.16 55);
+  --ember: oklch(0.72 0.16 55);
+  --ember-foreground: oklch(0.18 0.02 60);
+  --verified: oklch(0.72 0.14 165);
+  --attention: oklch(0.79 0.15 85);
+  --conflict: oklch(0.65 0.2 25);
+  --sidebar: oklch(0.19 0.012 260);
+  --sidebar-foreground: oklch(0.88 0.008 250);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility grid-backdrop {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 3%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 3%) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
