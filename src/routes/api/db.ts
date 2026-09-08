@@ -8,7 +8,7 @@ export const Route = createFileRoute("/api/db")({
       POST: async ({ request }) => {
         try {
           const authHeader = request.headers.get("authorization");
-          let token = authHeader?.replace("Bearer ", "").trim();
+          const token = authHeader?.replace("Bearer ", "").trim();
           let userId = "10000000-0000-4000-8000-000000000001";
           if (token) {
             const parsed = parseJwt(token);
@@ -59,9 +59,12 @@ export const Route = createFileRoute("/api/db")({
             }
 
             const result = Array.isArray(data) ? insertedRows : insertedRows[0];
-            return new Response(JSON.stringify({ data: single ? insertedRows[0] : result, error: null }), {
-              headers: { "Content-Type": "application/json" },
-            });
+            return new Response(
+              JSON.stringify({ data: single ? insertedRows[0] : result, error: null }),
+              {
+                headers: { "Content-Type": "application/json" },
+              },
+            );
           }
 
           // Handle UPDATE
@@ -186,7 +189,10 @@ export const Route = createFileRoute("/api/db")({
           if (single) {
             if (rows.length === 0) {
               return new Response(
-                JSON.stringify({ data: null, error: { message: "Row not found", code: "PGRST116" } }),
+                JSON.stringify({
+                  data: null,
+                  error: { message: "Row not found", code: "PGRST116" },
+                }),
                 { headers: { "Content-Type": "application/json" } },
               );
             }

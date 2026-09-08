@@ -47,6 +47,10 @@ export function getStoredOperatorSession(): Session | null {
     const validId = ensureValidUuid(profile.id);
     const validJwt = createOperatorJwt(validId, profile.email);
 
+    if (typeof document !== "undefined" && !document.cookie.includes("operator_token=")) {
+      document.cookie = `operator_token=${encodeURIComponent(validJwt)}; path=/; max-age=604800; SameSite=Lax`;
+    }
+
     const mockSession: Session = {
       access_token: validJwt,
       token_type: "bearer",
@@ -95,6 +99,8 @@ export function saveOperatorSession(profile: OperatorProfile): Session {
       id: ensureValidUuid(profile.id),
     };
     localStorage.setItem(OPERATOR_STORAGE_KEY, JSON.stringify(sanitizedProfile));
+    const token = createOperatorJwt(sanitizedProfile.id, sanitizedProfile.email);
+    document.cookie = `operator_token=${encodeURIComponent(token)}; path=/; max-age=604800; SameSite=Lax`;
     window.dispatchEvent(new Event("operator_auth_change"));
   }
   return getStoredOperatorSession()!;
@@ -104,6 +110,7 @@ export function saveOperatorSession(profile: OperatorProfile): Session {
 export function clearOperatorSession(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(OPERATOR_STORAGE_KEY);
+    document.cookie = "operator_token=; path=/; max-age=0; SameSite=Lax";
     window.dispatchEvent(new Event("operator_auth_change"));
   }
 }

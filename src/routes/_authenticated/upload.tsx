@@ -240,7 +240,9 @@ function UploadPage() {
           <div className="space-y-1.5">
             <Label htmlFor="source-title" className="text-xs font-medium text-foreground">
               {t("upload.sourceTitle", "Title")}{" "}
-              <span className="text-muted-foreground">{t("upload.sourceTitleOpt", "(Optional)")}</span>
+              <span className="text-muted-foreground">
+                {t("upload.sourceTitleOpt", "(Optional)")}
+              </span>
             </Label>
             <Input
               id="source-title"
@@ -384,10 +386,7 @@ function UploadPage() {
                   <strong className="text-foreground">
                     {t("upload.g1Title", "Any Length Accepted:")}
                   </strong>{" "}
-                  {t(
-                    "upload.g1Desc",
-                    "From a 1-line alert to extensive multi-chapter documents.",
-                  )}
+                  {t("upload.g1Desc", "From a 1-line alert to extensive multi-chapter documents.")}
                 </div>
               </li>
               <li className="flex items-start gap-2">

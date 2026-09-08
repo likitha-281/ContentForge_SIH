@@ -2,6 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { createSupabaseServerClient } from "@/integrations/supabase/client.server";
+import { getDb } from "./db.server";
+import { createOperatorJwt } from "./jwt-utils";
 import { chatJson, MODELS } from "./ai.server";
 import { appendAudit } from "./audit.server";
 import { chunkDocument } from "./text.server";
@@ -153,19 +156,69 @@ export const analyzeSource = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ jobId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: job, error } = await supabase
-      .from("jobs")
-      .select("id, source_id, stages")
-      .eq("id", data.jobId)
-      .single();
-    if (error) throw new Error(error.message);
+    const db = getDb();
 
-    const { data: source, error: sErr } = await supabase
+    // 1. Resolve job with user-client or fallback to direct DB lookup
+    let jobOwnerId = userId;
+    let jobData: { id: string; source_id: string; stages?: any } | null = null;
+
+    const { data: directJob } = await supabase
+      .from("jobs")
+      .select("id, source_id, stages, user_id")
+      .eq("id", data.jobId)
+      .maybeSingle();
+
+    if (directJob) {
+      jobData = directJob;
+      if ((directJob as any).user_id) jobOwnerId = (directJob as any).user_id;
+    } else {
+      const row = db.prepare("SELECT * FROM jobs WHERE id = ?").get(data.jobId) as any;
+      if (row) {
+        jobOwnerId = row.user_id || userId;
+        jobData = {
+          id: row.id,
+          source_id: row.source_id,
+          stages: typeof row.stages === "string" ? JSON.parse(row.stages) : row.stages,
+        };
+      }
+    }
+
+    if (!jobData) throw new Error("Job record not found.");
+
+    // Build active client scoped to the job's real owner
+    const activeClient =
+      jobOwnerId === userId
+        ? supabase
+        : createSupabaseServerClient(
+            jobOwnerId,
+            createOperatorJwt(jobOwnerId, "operator@intelliforge.ai"),
+          );
+
+    // 2. Resolve source with active client or fallback to direct DB lookup
+    let sourceData: { id: string; title: string; raw_text?: string; kind?: string } | null = null;
+    const { data: directSource } = await activeClient
       .from("sources")
       .select("id, title, raw_text, kind")
-      .eq("id", job.source_id)
-      .single();
-    if (sErr) throw new Error(sErr.message);
+      .eq("id", jobData.source_id)
+      .maybeSingle();
+
+    if (directSource) {
+      sourceData = directSource;
+    } else {
+      const sRow = db.prepare("SELECT * FROM sources WHERE id = ?").get(jobData.source_id) as any;
+      if (sRow) {
+        sourceData = {
+          id: sRow.id,
+          title: sRow.title,
+          raw_text: sRow.raw_text,
+          kind: sRow.kind,
+        };
+      }
+    }
+
+    if (!sourceData) throw new Error("Source record not found.");
+    const source = sourceData;
+    const job = jobData;
 
     const stages = initialStages();
     const setStage = async (key: string, status: StageState["status"], note?: string) => {
@@ -174,7 +227,7 @@ export const analyzeSource = createServerFn({ method: "POST" })
         stage.status = status;
         if (note) stage.note = note;
       }
-      await supabase
+      await activeClient
         .from("jobs")
         .update({
           stages,
@@ -240,12 +293,12 @@ export const analyzeSource = createServerFn({ method: "POST" })
 
       await setStage("indexing", "running");
       const chunks = chunkDocument(text);
-      await supabase.from("source_chunks").delete().eq("source_id", source.id);
-      const { data: insertedChunks, error: chunkErr } = await supabase
+      await activeClient.from("source_chunks").delete().eq("source_id", source.id);
+      const { data: insertedChunks, error: chunkErr } = await activeClient
         .from("source_chunks")
         .insert(
           chunks.map((c) => ({
-            user_id: userId,
+            user_id: jobOwnerId,
             source_id: source.id,
             ordinal: c.ordinal,
             locator: c.locator,
@@ -267,14 +320,14 @@ export const analyzeSource = createServerFn({ method: "POST" })
       };
 
       await setStage("facts", "running");
-      await supabase.from("facts").delete().eq("source_id", source.id);
-      await supabase.from("claims").delete().eq("source_id", source.id);
-      await supabase.from("entities").delete().eq("source_id", source.id);
+      await activeClient.from("facts").delete().eq("source_id", source.id);
+      await activeClient.from("claims").delete().eq("source_id", source.id);
+      await activeClient.from("entities").delete().eq("source_id", source.id);
 
       const factRows = factsList.map((f) => {
         const chunk = locate(f.quote);
         return {
-          user_id: userId,
+          user_id: jobOwnerId,
           source_id: source.id,
           label: f.label,
           value: f.value,
@@ -283,7 +336,7 @@ export const analyzeSource = createServerFn({ method: "POST" })
           chunk_id: chunk?.id ?? null,
         };
       });
-      if (factRows.length) await supabase.from("facts").insert(factRows);
+      if (factRows.length) await activeClient.from("facts").insert(factRows);
       await setStage("facts", "done", `${factRows.length} facts extracted`);
 
       await setStage("factlock", "running");
@@ -293,31 +346,31 @@ export const analyzeSource = createServerFn({ method: "POST" })
       const claimRows = claimsList.map((c) => {
         const chunk = locate(c.quote || c.text);
         return {
-          user_id: userId,
+          user_id: jobOwnerId,
           source_id: source.id,
           text: c.text,
           locator: chunk?.locator ?? `[P1]`,
           chunk_id: chunk?.id ?? null,
         };
       });
-      if (claimRows.length) await supabase.from("claims").insert(claimRows);
+      if (claimRows.length) await activeClient.from("claims").insert(claimRows);
 
       const entityRows = understanding.entities.map((e) => ({
-        user_id: userId,
+        user_id: jobOwnerId,
         source_id: source.id,
         name: e.name,
         entity_type: e.type || "other",
       }));
-      if (entityRows.length) await supabase.from("entities").insert(entityRows);
+      if (entityRows.length) await activeClient.from("entities").insert(entityRows);
 
-      await supabase
+      await activeClient
         .from("sources")
         .update({ status: "ready", summary: understanding.summary })
         .eq("id", source.id);
       await setStage("ready", "done", "Source is ready for transformation");
-      await supabase.from("jobs").update({ status: "ready" }).eq("id", job.id);
+      await activeClient.from("jobs").update({ status: "ready" }).eq("id", job.id);
 
-      await appendAudit(supabase, userId, {
+      await appendAudit(activeClient, jobOwnerId, {
         actor: "system",
         action: "source.analysed",
         entity_type: "source",
@@ -329,11 +382,11 @@ export const analyzeSource = createServerFn({ method: "POST" })
       return { ok: true, sourceId: source.id as string };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      await supabase
+      await activeClient
         .from("jobs")
         .update({ status: "failed", error: message, stages })
         .eq("id", job.id);
-      await supabase.from("sources").update({ status: "failed" }).eq("id", source.id);
+      await activeClient.from("sources").update({ status: "failed" }).eq("id", source.id);
       throw new Error(message);
     }
   });

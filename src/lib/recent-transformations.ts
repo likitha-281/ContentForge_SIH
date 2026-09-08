@@ -24,7 +24,9 @@ export function getRecentTransformations(): RecentTransformation[] {
   }
 }
 
-export function saveRecentTransformation(item: Omit<RecentTransformation, "id" | "timestamp"> & { id?: string }) {
+export function saveRecentTransformation(
+  item: Omit<RecentTransformation, "id" | "timestamp"> & { id?: string },
+) {
   if (typeof window === "undefined") return;
   try {
     const existing = getRecentTransformations();

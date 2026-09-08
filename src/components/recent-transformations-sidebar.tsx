@@ -184,7 +184,9 @@ export function RecentTransformationsSidebar() {
                         )}
                       </button>
                     </div>
-                    <p className="line-clamp-2 leading-relaxed font-sans">{item.outputTextSnippet}</p>
+                    <p className="line-clamp-2 leading-relaxed font-sans">
+                      {item.outputTextSnippet}
+                    </p>
                   </div>
 
                   {/* Footer actions */}

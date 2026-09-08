@@ -39,7 +39,7 @@ function ProcessingPage() {
   const started = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { data } = useLiveQuery(
+  const { data, refetch } = useLiveQuery(
     ["job", jobId] as never,
     async () => {
       const { data: job } = await supabase
@@ -70,21 +70,43 @@ function ProcessingPage() {
       };
     },
     ["jobs", "facts", "claims", "entities", "sources"],
+    true,
+    {
+      refetchInterval: (query: any) => {
+        const status = query.state.data?.job?.status;
+        return status === "ready" || status === "failed" ? false : 1200;
+      },
+    },
   );
 
   useEffect(() => {
-    if (started.current || !data?.job) return;
-    if (data.job.status === "queued") {
+    if (started.current) return;
+    if (data?.job?.status === "queued") {
       started.current = true;
-      analyze({ data: { jobId } }).catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : "Pipeline failed.";
-        setError(message);
-        toast.error(message);
-      });
+      analyze({ data: { jobId } })
+        .then(() => refetch())
+        .catch((err: unknown) => {
+          const message = err instanceof Error ? err.message : "Pipeline failed.";
+          setError(message);
+          toast.error(message);
+        });
     }
-  }, [data?.job, analyze, jobId]);
+  }, [data?.job?.status, analyze, jobId, refetch]);
 
-  const stages = (data?.job?.stages as Stage[] | undefined) ?? [];
+  const defaultStages: Stage[] = [
+    { key: "upload", label: "Source received", status: "running" },
+    { key: "parsing", label: "Parsing & normalising", status: "pending" },
+    { key: "extraction", label: "Text extraction (OCR / transcript stand-in)", status: "pending" },
+    { key: "understanding", label: "Content understanding", status: "pending" },
+    { key: "facts", label: "Fact extraction", status: "pending" },
+    { key: "factlock", label: "Fact lock", status: "pending" },
+    { key: "indexing", label: "Chunking & keyword indexing", status: "pending" },
+    { key: "ready", label: "Ready for transformation", status: "pending" },
+  ];
+
+  const stages = (data?.job?.stages as Stage[] | undefined)?.length
+    ? (data?.job?.stages as Stage[])
+    : defaultStages;
   const ready = data?.job?.status === "ready";
 
   return (
@@ -225,10 +247,19 @@ function ProcessingPage() {
           <Button
             variant="outline"
             onClick={() => {
+              setError(null);
               started.current = true;
-              analyze({ data: { jobId } }).catch((err: unknown) =>
-                toast.error(err instanceof Error ? err.message : "Pipeline failed."),
-              );
+              toast.info("Triggering pipeline execution...");
+              analyze({ data: { jobId } })
+                .then(() => {
+                  toast.success("Pipeline analysis started.");
+                  refetch();
+                })
+                .catch((err: unknown) => {
+                  const message = err instanceof Error ? err.message : "Pipeline failed.";
+                  setError(message);
+                  toast.error(message);
+                });
             }}
           >
             Re-run pipeline

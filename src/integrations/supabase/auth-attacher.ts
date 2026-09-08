@@ -24,10 +24,7 @@ export const attachSupabaseAuth = createMiddleware({ type: "function" }).client(
     }
 
     if (!token) {
-      token = createOperatorJwt(
-        "10000000-0000-4000-8000-000000000001",
-        "operator@intelliforge.ai",
-      );
+      token = createOperatorJwt("10000000-0000-4000-8000-000000000001", "operator@intelliforge.ai");
     }
 
     return next({

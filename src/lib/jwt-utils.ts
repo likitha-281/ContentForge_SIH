@@ -40,11 +40,7 @@ function base64UrlDecode(str: string): string {
  * Creates a deterministic, valid 3-part JWT for the given user profile.
  * Every JWT generated has HEADER.PAYLOAD.SIGNATURE (exactly 3 dot-separated parts).
  */
-export function createOperatorJwt(
-  userId: string,
-  email: string,
-  role = "authenticated",
-): string {
+export function createOperatorJwt(userId: string, email: string, role = "authenticated"): string {
   const header = {
     alg: "HS256",
     typ: "JWT",

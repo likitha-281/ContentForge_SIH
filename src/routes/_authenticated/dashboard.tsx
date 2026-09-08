@@ -16,6 +16,7 @@ import {
 
 import { PageHeader } from "@/components/page-header";
 import { TrustBadge } from "@/components/trust";
+import { SupabaseSetupBanner } from "@/components/supabase-setup-banner";
 import { useLiveQuery } from "@/hooks/use-live-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -157,6 +158,8 @@ export function Dashboard() {
 
       {/* Metrics Row */}
       <div className="p-6">
+        <SupabaseSetupBanner />
+
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {stats.map((stat) => (
             <div

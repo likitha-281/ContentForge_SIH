@@ -1,21 +1,32 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { ensureValidUuid } from "@/lib/auth-service";
-import { createLocalSupabaseClient } from "@/lib/db.server";
+import { createSupabaseServerClient } from "./client.server";
 import { parseJwt, createOperatorJwt } from "@/lib/jwt-utils";
 
 export const requireSupabaseAuth = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const request = getRequest();
-    let authHeader = request?.headers?.get("authorization");
+    const authHeader = request?.headers?.get("authorization");
 
     let token = authHeader?.replace("Bearer ", "").trim();
 
     if (!token) {
-      token = createOperatorJwt(
-        "10000000-0000-4000-8000-000000000001",
-        "operator@intelliforge.ai",
-      );
+      const cookieHeader = request?.headers?.get("cookie");
+      if (cookieHeader) {
+        const match = cookieHeader.match(/operator_token=([^;]+)/);
+        if (match?.[1]) {
+          try {
+            token = decodeURIComponent(match[1].trim());
+          } catch {
+            token = match[1].trim();
+          }
+        }
+      }
+    }
+
+    if (!token) {
+      token = createOperatorJwt("10000000-0000-4000-8000-000000000001", "operator@intelliforge.ai");
     }
 
     let validUserId = "10000000-0000-4000-8000-000000000001";
@@ -36,16 +47,18 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
         };
       }
     } else if (token.startsWith("operator-token-") || token.startsWith("operator-")) {
-      // Legacy operator string
+      // Legacy operator string: convert to valid UUID and genuine 3-part JWT
       const rawId = token.replace("operator-token-", "").replace("operator-", "");
       validUserId = ensureValidUuid(rawId);
+      token = createOperatorJwt(validUserId, "operator@intelliforge.ai");
       claims = { sub: validUserId, role: "operator" };
     } else {
       validUserId = ensureValidUuid(token);
+      token = createOperatorJwt(validUserId, "operator@intelliforge.ai");
       claims = { sub: validUserId, role: "operator" };
     }
 
-    const supabase = createLocalSupabaseClient(validUserId);
+    const supabase = createSupabaseServerClient(validUserId, token);
 
     return next({
       context: {

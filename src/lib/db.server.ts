@@ -179,7 +179,8 @@ export function getDb(): DatabaseSync {
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       output_id TEXT NOT NULL,
-      decision TEXT NOT NULL,
+      action TEXT NOT NULL DEFAULT 'approve',
+      decision TEXT DEFAULT 'approve',
       notes TEXT,
       diff_json TEXT,
       created_at TEXT DEFAULT (datetime('now'))
@@ -220,6 +221,7 @@ export function getDb(): DatabaseSync {
 
   // Run safe schema migrations for existing tables
   const safeAlterCols = [
+    "ALTER TABLE reviews ADD COLUMN action TEXT DEFAULT 'approve'",
     "ALTER TABLE outputs ADD COLUMN model TEXT",
     "ALTER TABLE outputs ADD COLUMN updated_at TEXT",
     "ALTER TABLE generation_requests ADD COLUMN output_types TEXT",
@@ -485,10 +487,16 @@ function createQueryBuilder(db: DatabaseSync, table: string, defaultUserId: stri
             if (!row.user_id && table !== "demo_scenarios") {
               row.user_id = defaultUserId;
             }
+            if (table === "reviews") {
+              if (row.action && !row.decision) row.decision = row.action;
+              if (row.decision && !row.action) row.action = row.decision;
+            }
 
-            // Serialize objects or arrays to JSON strings
+            // Serialize booleans, objects or arrays for SQLite
             for (const key of Object.keys(row)) {
-              if (
+              if (typeof row[key] === "boolean") {
+                row[key] = row[key] ? 1 : 0;
+              } else if (
                 row[key] !== null &&
                 typeof row[key] === "object" &&
                 !(row[key] instanceof Date)
@@ -517,7 +525,9 @@ function createQueryBuilder(db: DatabaseSync, table: string, defaultUserId: stri
 
           const safeUpdate = { ...updateData };
           for (const key of Object.keys(safeUpdate)) {
-            if (
+            if (typeof safeUpdate[key] === "boolean") {
+              safeUpdate[key] = safeUpdate[key] ? 1 : 0;
+            } else if (
               safeUpdate[key] !== null &&
               typeof safeUpdate[key] === "object" &&
               !(safeUpdate[key] instanceof Date)
@@ -530,12 +540,13 @@ function createQueryBuilder(db: DatabaseSync, table: string, defaultUserId: stri
 
           const whereClauses: string[] = [];
           for (const f of filters) {
+            const paramVal = typeof f.val === "boolean" ? (f.val ? 1 : 0) : f.val;
             if (f.type === "eq") {
               whereClauses.push(`${f.col} = ?`);
-              values.push(f.val);
+              values.push(paramVal);
             } else if (f.type === "neq") {
               whereClauses.push(`${f.col} != ?`);
-              values.push(f.val);
+              values.push(paramVal);
             }
           }
 

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { chatStream, MODELS } from "@/lib/ai.server";
 import { appendAudit } from "@/lib/audit.server";
+import { getDb } from "@/lib/db.server";
 import { clientFromRequest } from "@/lib/request-auth.server";
 import { runVerification } from "@/lib/verify.server";
 
@@ -42,12 +43,12 @@ export const Route = createFileRoute("/api/generate")({
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
 
             try {
-              const [{ data: source }, { data: chunks }, { data: facts }] = await Promise.all([
+              let [{ data: source }, { data: chunks }, { data: facts }] = await Promise.all([
                 supabase
                   .from("sources")
                   .select("id, title, raw_text, summary")
                   .eq("id", body.sourceId)
-                  .single(),
+                  .maybeSingle(),
                 supabase
                   .from("source_chunks")
                   .select("locator, content")
@@ -58,6 +59,26 @@ export const Route = createFileRoute("/api/generate")({
                   .select("label, value, is_locked, locator")
                   .eq("source_id", body.sourceId),
               ]);
+
+              if (!source) {
+                const db = getDb();
+                const rawSource = db
+                  .prepare("SELECT id, title, raw_text, summary FROM sources WHERE id = ?")
+                  .get(body.sourceId) as any;
+                if (rawSource) {
+                  source = rawSource;
+                  chunks = (db
+                    .prepare(
+                      "SELECT locator, content FROM source_chunks WHERE source_id = ? ORDER BY ordinal",
+                    )
+                    .all(body.sourceId) ?? []) as any;
+                  facts = (db
+                    .prepare(
+                      "SELECT label, value, is_locked, locator FROM facts WHERE source_id = ?",
+                    )
+                    .all(body.sourceId) ?? []) as any;
+                }
+              }
 
               if (!source) throw new Error("Source not found.");
 

@@ -24,6 +24,7 @@ import { setFactLock } from "@/lib/pipeline.functions";
 import { parseIntent } from "@/lib/intent.functions";
 import { LANGUAGES } from "@/lib/i18n";
 import { getStoredOperatorSession } from "@/lib/auth-service";
+import { createOperatorJwt } from "@/lib/jwt-utils";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/workspace/$sourceId")({
@@ -151,7 +152,7 @@ function Workspace() {
       const token =
         sessionData.session?.access_token ||
         local?.access_token ||
-        "operator-token-10000000-0000-4000-8000-000000000001";
+        createOperatorJwt("10000000-0000-4000-8000-000000000001", "operator@intelliforge.ai");
 
       const response = await fetch("/api/generate", {
         method: "POST",

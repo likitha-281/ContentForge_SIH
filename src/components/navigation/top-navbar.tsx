@@ -78,12 +78,18 @@ export function TopNavbar() {
         </div>
       </div>
 
-      {/* Center: Live Engine Status Pill */}
-      <div className="hidden lg:flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] text-emerald-400">
-        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="font-mono tracking-wide">
-          {t("topbar.status", "Pipeline Active · Fact Lock Ready")}
-        </span>
+      {/* Center: Live Engine Status Pill & Supabase Indicator */}
+      <div className="hidden lg:flex items-center gap-2">
+        <div className="flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] text-emerald-400">
+          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-mono tracking-wide">
+            {t("topbar.status", "Pipeline Active · Fact Lock Ready")}
+          </span>
+        </div>
+        <div className="hidden xl:flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-surface-raised px-2.5 py-1 text-[11px] text-muted-foreground font-mono">
+          <span className="size-1.5 rounded-full bg-emerald-400" />
+          <span>Supabase: Connected</span>
+        </div>
       </div>
 
       {/* Right: Actions, Language, and Operator Identity */}

@@ -120,7 +120,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "upload.classification": "Category",
     "upload.dropzone": "Drop a text file (.txt, .md, .csv, .json) or browse",
     "upload.rawText": "Source Text",
-    "upload.rawTextPlaceholder": "Type or paste your text here... Accepts any size and all languages.",
+    "upload.rawTextPlaceholder":
+      "Type or paste your text here... Accepts any size and all languages.",
     "upload.processBtn": "Process Source",
     "upload.processingBtn": "Processing Source...",
     "upload.chars": "chars",
@@ -134,14 +135,16 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "upload.g3Title": "Fact Protection:",
     "upload.g3Desc": "Numbers, dates, and names remain locked.",
     "upload.statusTitle": "System Ready",
-    "upload.statusDesc": "Ready to process. Next you can generate executive briefs, advisories, or notices.",
+    "upload.statusDesc":
+      "Ready to process. Next you can generate executive briefs, advisories, or notices.",
 
     // Processing & Understanding
     "processing.eyebrow": "Step 2 · Understanding",
     "processing.title": "Processing Source",
     "processing.desc": "Extracting facts, indexing passages, and securing numbers and dates.",
     "processing.completeTitle": "SOURCE UNDERSTANDING COMPLETE ✓",
-    "processing.completeDesc": "Facts extracted, evidence indexed, and critical values protected. Ready for transformation.",
+    "processing.completeDesc":
+      "Facts extracted, evidence indexed, and critical values protected. Ready for transformation.",
     "processing.continueBtn": "CONTINUE TO TRANSFORMATION",
     "processing.factsTitle": "Extracted Facts",
     "processing.claimsTitle": "Extracted Claims",
@@ -153,9 +156,11 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Workspace & Transformation
     "workspace.eyebrow": "Step 3 · Transform",
     "workspace.title": "Generate Outputs",
-    "workspace.desc": "Create tailored versions for different audiences with locked facts and verified evidence.",
+    "workspace.desc":
+      "Create tailored versions for different audiences with locked facts and verified evidence.",
     "workspace.requestLabel": "Instructions / Goals",
-    "workspace.requestPlaceholder": "e.g., Executive brief for leadership, technical summary for engineers, public notice...",
+    "workspace.requestPlaceholder":
+      "e.g., Executive brief for leadership, technical summary for engineers, public notice...",
     "workspace.audiencesTitle": "Target Audiences",
     "workspace.addAudience": "Add Audience",
     "workspace.generateBtn": "Generate Outputs",
@@ -269,7 +274,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Upload
     "upload.eyebrow": "चरण 1 · इनपुट",
     "upload.title": "स्रोत जोड़ें",
-    "upload.desc": "मुख्य तथ्यों को निकालने और लॉक करने के लिए रिपोर्ट, मेमो या अलर्ट अपलोड या पेस्ट करें।",
+    "upload.desc":
+      "मुख्य तथ्यों को निकालने और लॉक करने के लिए रिपोर्ट, मेमो या अलर्ट अपलोड या पेस्ट करें।",
     "upload.loadDemo": "नमूना परिदृश्य",
     "upload.quickScenarios": "त्वरित परिदृश्य",
     "upload.quickScenariosSub": "विवरण तुरंत भरने के लिए किसी भी कार्ड पर क्लिक करें",
@@ -279,7 +285,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "upload.classification": "श्रेणी",
     "upload.dropzone": ".txt, .md, .csv, या .json फ़ाइल यहाँ छोड़ें या ब्राउज़ करें",
     "upload.rawText": "स्रोत पाठ",
-    "upload.rawTextPlaceholder": "यहाँ अपना पाठ लिखें या पेस्ट करें... किसी भी आकार और सभी भाषाओं का समर्थन करता है।",
+    "upload.rawTextPlaceholder":
+      "यहाँ अपना पाठ लिखें या पेस्ट करें... किसी भी आकार और सभी भाषाओं का समर्थन करता है।",
     "upload.processBtn": "स्रोत प्रोसेस करें",
     "upload.processingBtn": "प्रोसेसिंग जारी...",
     "upload.chars": "अक्षर",
@@ -293,14 +300,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "upload.g3Title": "तथ्य सुरक्षा:",
     "upload.g3Desc": "संख्याएं, तिथियां और नाम कड़ाई से लॉक रहते हैं।",
     "upload.statusTitle": "सिस्टम तैयार",
-    "upload.statusDesc": "प्रोसेसिंग के लिए तैयार। इसके बाद आप कार्यकारी सारांश, सलाह या सूचनाएं बना सकते हैं।",
+    "upload.statusDesc":
+      "प्रोसेसिंग के लिए तैयार। इसके बाद आप कार्यकारी सारांश, सलाह या सूचनाएं बना सकते हैं।",
 
     // Processing & Understanding
     "processing.eyebrow": "चरण 2 · समझ",
     "processing.title": "स्रोत प्रोसेसिंग",
-    "processing.desc": "तथ्यों को निकालना, अंशों को अनुक्रमित करना और संख्याओं तथा तिथियों को सुरक्षित करना।",
+    "processing.desc":
+      "तथ्यों को निकालना, अंशों को अनुक्रमित करना और संख्याओं तथा तिथियों को सुरक्षित करना।",
     "processing.completeTitle": "स्रोत की समझ पूर्ण हुई ✓",
-    "processing.completeDesc": "तथ्य निकाले गए, साक्ष्य अनुक्रमित किए गए और महत्वपूर्ण मान सुरक्षित किए गए। रूपांतरण के लिए तैयार।",
+    "processing.completeDesc":
+      "तथ्य निकाले गए, साक्ष्य अनुक्रमित किए गए और महत्वपूर्ण मान सुरक्षित किए गए। रूपांतरण के लिए तैयार।",
     "processing.continueBtn": "रूपांतरण जारी रखें",
     "processing.factsTitle": "निकाले गए तथ्य",
     "processing.claimsTitle": "निकाले गए दावे",
@@ -312,9 +322,11 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Workspace & Transformation
     "workspace.eyebrow": "चरण 3 · रूपांतरण",
     "workspace.title": "आउटपुट उत्पन्न करें",
-    "workspace.desc": "लॉक किए गए तथ्यों और सत्यापित साक्ष्यों के साथ विभिन्न दर्शकों के लिए अनुकूलित संस्करण बनाएं।",
+    "workspace.desc":
+      "लॉक किए गए तथ्यों और सत्यापित साक्ष्यों के साथ विभिन्न दर्शकों के लिए अनुकूलित संस्करण बनाएं।",
     "workspace.requestLabel": "निर्देश / लक्ष्य",
-    "workspace.requestPlaceholder": "उदा., नेतृत्व के लिए संक्षिप्त विवरण, इंजीनियरों के लिए तकनीकी सारांश, सार्वजनिक सूचना...",
+    "workspace.requestPlaceholder":
+      "उदा., नेतृत्व के लिए संक्षिप्त विवरण, इंजीनियरों के लिए तकनीकी सारांश, सार्वजनिक सूचना...",
     "workspace.audiencesTitle": "लक्षित दर्शक",
     "workspace.addAudience": "दर्शक जोड़ें",
     "workspace.generateBtn": "आउटपुट बनाएं",
@@ -428,7 +440,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Upload
     "upload.eyebrow": "దశ 1 · ఇన్‌పుట్",
     "upload.title": "మూలాన్ని జోడించండి",
-    "upload.desc": "ముఖ్య వాస్తవాలను సంగ్రహించి భద్రపరచడానికి ఏదైనా నివేదిక లేదా మెమోను అప్‌లోడ్ చేయండి లేదా పేస్ట్ చేయండి.",
+    "upload.desc":
+      "ముఖ్య వాస్తవాలను సంగ్రహించి భద్రపరచడానికి ఏదైనా నివేదిక లేదా మెమోను అప్‌లోడ్ చేయండి లేదా పేస్ట్ చేయండి.",
     "upload.loadDemo": "నమూనా దృష్టాంతం",
     "upload.quickScenarios": "త్వరిత దృష్టాంతాలు",
     "upload.quickScenariosSub": "వివరాలను పూరించడానికి ఏదైనా కార్డుపై క్లిక్ చేయండి",
@@ -438,7 +451,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "upload.classification": "వర్గం",
     "upload.dropzone": ".txt, .md, .csv లేదా .json ఫైల్‌ను ఇక్కడ వేయండి లేదా ఎంచుకోండి",
     "upload.rawText": "మూల పాఠ్యం",
-    "upload.rawTextPlaceholder": "ఇక్కడ మీ పాఠ్యాన్ని టైప్ చేయండి లేదా పేస్ట్ చేయండి... ఏ పరిమాణమైనా అంగీకరించబడుతుంది.",
+    "upload.rawTextPlaceholder":
+      "ఇక్కడ మీ పాఠ్యాన్ని టైప్ చేయండి లేదా పేస్ట్ చేయండి... ఏ పరిమాణమైనా అంగీకరించబడుతుంది.",
     "upload.processBtn": "మూలాన్ని ప్రాసెస్ చేయండి",
     "upload.processingBtn": "ప్రాసెసింగ్ జరుగుతోంది...",
     "upload.chars": "అక్షరాలు",
@@ -452,14 +466,16 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "upload.g3Title": "వాస్తవాల రక్షణ:",
     "upload.g3Desc": "సంఖ్యలు, తేదీలు మరియు పేర్లు ఖచ్చితంగా లాక్ చేయబడతాయి.",
     "upload.statusTitle": "సిస్టమ్ సిద్ధంగా ఉంది",
-    "upload.statusDesc": "ప్రాసెసింగ్ కోసం సిద్ధం. తర్వాత మీరు కార్యనిర్వాహక బ్రీఫ్‌లు లేదా ప్రకటనలను రూపొందించవచ్చు.",
+    "upload.statusDesc":
+      "ప్రాసెసింగ్ కోసం సిద్ధం. తర్వాత మీరు కార్యనిర్వాహక బ్రీఫ్‌లు లేదా ప్రకటనలను రూపొందించవచ్చు.",
 
     // Processing & Understanding
     "processing.eyebrow": "దశ 2 · అవగాహన",
     "processing.title": "మూల ప్రాసెసింగ్",
     "processing.desc": "వాస్తవాలను సంగ్రహించడం మరియు సంఖ్యలు, తేదీలను భద్రపరచడం.",
     "processing.completeTitle": "మూల అవగాహన పూర్తయింది ✓",
-    "processing.completeDesc": "వాస్తవాలు సంగ్రహించబడ్డాయి మరియు సాక్ష్యాలు సూచిక చేయబడ్డాయి. పరివర్తనకు సిద్ధంగా ఉంది.",
+    "processing.completeDesc":
+      "వాస్తవాలు సంగ్రహించబడ్డాయి మరియు సాక్ష్యాలు సూచిక చేయబడ్డాయి. పరివర్తనకు సిద్ధంగా ఉంది.",
     "processing.continueBtn": "పరివర్తనకు కొనసాగించండి",
     "processing.factsTitle": "సంగ్రహించిన వాస్తవాలు",
     "processing.claimsTitle": "సంగ్రహించిన క్లెయిమ్‌లు",
@@ -471,9 +487,11 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     // Workspace & Transformation
     "workspace.eyebrow": "దశ 3 · పరివర్తన",
     "workspace.title": "ఉత్పత్తులను రూపొందించండి",
-    "workspace.desc": "లాక్ చేసిన వాస్తవాలతో వివిధ ప్రేక్షకుల కోసం అనుకూలీకరించిన రూపాలను సృష్టించండి.",
+    "workspace.desc":
+      "లాక్ చేసిన వాస్తవాలతో వివిధ ప్రేక్షకుల కోసం అనుకూలీకరించిన రూపాలను సృష్టించండి.",
     "workspace.requestLabel": "సూచనలు / లక్ష్యాలు",
-    "workspace.requestPlaceholder": "ఉదా., నాయకత్వం కోసం ఎగ్జిక్యూటివ్ బ్రీఫ్, ఇంజనీర్ల కోసం సాంకేతిక సారాంశం...",
+    "workspace.requestPlaceholder":
+      "ఉదా., నాయకత్వం కోసం ఎగ్జిక్యూటివ్ బ్రీఫ్, ఇంజనీర్ల కోసం సాంకేతిక సారాంశం...",
     "workspace.audiencesTitle": "లక్ష్య ప్రేక్షకులు",
     "workspace.addAudience": "ప్రేక్షకుడిని జోడించండి",
     "workspace.generateBtn": "ఉత్పత్తులను రూపొందించండి",
@@ -487,7 +505,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     "recent.btnLabel": "ఇటీవలివి",
     "recent.subdesc": "ఈ బ్రౌజర్‌లో సేవ్ చేయబడిన ఇన్‌పుట్ మరియు అవుట్‌పుట్",
     "recent.emptyTitle": "ఇంకా ఇటీవలి పరివర్తనలు లేవు",
-    "recent.emptyDesc": "మీరు మూలాన్ని జోడించినప్పుడు లేదా ఉత్పత్తి చేసినప్పుడు, అవి ఇక్కడ కనిపిస్తాయి.",
+    "recent.emptyDesc":
+      "మీరు మూలాన్ని జోడించినప్పుడు లేదా ఉత్పత్తి చేసినప్పుడు, అవి ఇక్కడ కనిపిస్తాయి.",
     "recent.inputLabel": "ఇన్‌పుట్ మూలం",
     "recent.outputLabel": "రూపొందించిన ఉత్పత్తి",
     "recent.copyInput": "ఇన్‌పుట్ కాపీ చేయండి",

@@ -9,10 +9,18 @@ export function useLiveQuery<T>(
   fetcher: () => Promise<T>,
   tables: string[],
   enabled = true,
+  options?: {
+    refetchInterval?: number | false | ((query: any) => number | false | undefined);
+  },
 ) {
   const normalizedKey: QueryKey = Array.isArray(key) ? key : [key as unknown];
   const queryClient = useQueryClient();
-  const query = useQuery({ queryKey: normalizedKey, queryFn: fetcher, enabled });
+  const query = useQuery({
+    queryKey: normalizedKey,
+    queryFn: fetcher,
+    enabled,
+    refetchInterval: options?.refetchInterval,
+  });
 
   useEffect(() => {
     if (!enabled) return;
