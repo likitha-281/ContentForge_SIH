@@ -1,6 +1,7 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { supabase } from "./client";
 import { getStoredOperatorSession } from "@/lib/auth-service";
+import { createOperatorJwt } from "@/lib/jwt-utils";
 
 // Must be registered as a global `functionMiddleware` in `src/start.ts`; otherwise
 // the browser never attaches the bearer token to serverFn RPCs.
@@ -23,7 +24,10 @@ export const attachSupabaseAuth = createMiddleware({ type: "function" }).client(
     }
 
     if (!token) {
-      token = "operator-token-10000000-0000-4000-8000-000000000001";
+      token = createOperatorJwt(
+        "10000000-0000-4000-8000-000000000001",
+        "operator@intelliforge.ai",
+      );
     }
 
     return next({

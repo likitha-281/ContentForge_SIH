@@ -1,5 +1,6 @@
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { createOperatorJwt } from "./jwt-utils";
 
 export const OPERATOR_STORAGE_KEY = "intelliforge_operator_session";
 
@@ -44,9 +45,10 @@ export function getStoredOperatorSession(): Session | null {
     if (!profile.email) return null;
 
     const validId = ensureValidUuid(profile.id);
+    const validJwt = createOperatorJwt(validId, profile.email);
 
     const mockSession: Session = {
-      access_token: "operator-token-" + validId,
+      access_token: validJwt,
       token_type: "bearer",
       expires_in: 604800, // 7 days
       expires_at: Math.floor(Date.now() / 1000) + 604800,

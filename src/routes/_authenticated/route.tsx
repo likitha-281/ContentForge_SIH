@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/context/language-context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ForgeCopilot } from "@/components/forge-copilot";
+import { RecentTransformationsSidebar } from "@/components/recent-transformations-sidebar";
 import { TopNavbar } from "@/components/navigation/top-navbar";
 import { signOutAll } from "@/lib/auth-service";
 import { cn } from "@/lib/utils";
@@ -216,6 +217,9 @@ export function AuthenticatedLayout() {
 
       {/* Floating Grounded Intelligence Copilot */}
       <ForgeCopilot />
+
+      {/* Persistent LocalStorage Recent Transformations Sidebar */}
+      <RecentTransformationsSidebar />
     </div>
   );
 }

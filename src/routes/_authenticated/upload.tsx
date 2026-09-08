@@ -172,9 +172,12 @@ function UploadPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <PageHeader
-        eyebrow="Stage 1 · Source Intake & Analysis"
-        title="Upload Source Document"
-        description="Provide raw reports, advisories, notes, or short memos. Accepts any content size from small updates to extensive documents."
+        eyebrow={t("upload.eyebrow", "Step 1 · Input")}
+        title={t("upload.title", "Add Source")}
+        description={t(
+          "upload.desc",
+          "Upload or paste any report, memo, or alert to extract and lock key facts.",
+        )}
         actions={
           <Button
             variant="outline"
@@ -183,20 +186,20 @@ function UploadPage() {
             className="text-xs border-border/80 bg-background hover:bg-surface-raised"
           >
             <Sparkles className="size-3.5 mr-1 text-ember" />
-            Load Sample Scenario
+            {t("upload.loadDemo", "Sample Scenario")}
           </Button>
         }
       />
 
       {/* Quick Test Scenarios Bar */}
-      <div className="rounded-lg border border-border/70 bg-surface/80 p-4">
+      <div className="rounded-xl border border-border/80 bg-surface/80 p-4 shadow-xs backdrop-blur-sm">
         <div className="mb-2 flex items-center justify-between">
           <span className="flex items-center gap-1.5 font-mono text-xs font-semibold text-foreground">
             <BookOpen className="size-3.5 text-ember" />
-            Quick Scenarios (One-Click Test)
+            {t("upload.quickScenarios", "Quick Scenarios")}
           </span>
           <span className="text-[11px] text-muted-foreground">
-            Click to auto-populate title, category, and source content
+            {t("upload.quickScenariosSub", "Click any card to fill details instantly")}
           </span>
         </div>
 
@@ -206,14 +209,14 @@ function UploadPage() {
               key={p.id}
               type="button"
               onClick={() => loadPreset(p)}
-              className="group flex flex-col justify-between rounded-md border border-border/80 bg-background/80 p-3 text-left transition-all hover:border-ember/60 hover:bg-surface-raised"
+              className="group flex flex-col justify-between rounded-lg border border-border/80 bg-background/80 p-3 text-left transition-all hover:border-ember/60 hover:bg-surface-raised"
             >
               <div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="line-clamp-1 text-xs font-semibold text-foreground group-hover:text-ember transition-colors">
                     {p.title}
                   </span>
-                  <span className="shrink-0 rounded bg-ember/10 px-1.5 py-0.5 font-mono text-[9px] font-medium text-ember">
+                  <span className="shrink-0 rounded-full bg-ember/10 px-2 py-0.5 font-mono text-[9px] font-medium text-ember">
                     {p.badge}
                   </span>
                 </div>
@@ -222,7 +225,7 @@ function UploadPage() {
                 </p>
               </div>
               <span className="mt-2 block font-mono text-[10px] uppercase text-muted-foreground">
-                Classification: {p.kind}
+                {t("upload.classification", "Category")}: {p.kind}
               </span>
             </button>
           ))}
@@ -232,24 +235,30 @@ function UploadPage() {
       {/* Main Upload Grid */}
       <div className="grid gap-6 lg:grid-cols-12">
         {/* Input Form Column */}
-        <div className="space-y-5 rounded-lg border border-border/80 bg-surface/90 p-6 lg:col-span-8 shadow-xs">
+        <div className="space-y-5 rounded-xl border border-border/80 bg-surface/90 p-6 lg:col-span-8 shadow-xs">
           {/* Document Title */}
           <div className="space-y-1.5">
             <Label htmlFor="source-title" className="text-xs font-medium text-foreground">
-              Document Title <span className="text-muted-foreground">(Optional)</span>
+              {t("upload.sourceTitle", "Title")}{" "}
+              <span className="text-muted-foreground">{t("upload.sourceTitleOpt", "(Optional)")}</span>
             </Label>
             <Input
               id="source-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Incident Report INC-2026-0492 or Daily Security Briefing"
-              className="h-10 text-xs border-border/80 bg-background/90 focus-visible:ring-ember font-sans"
+              placeholder={t(
+                "upload.sourceTitlePlaceholder",
+                "e.g., Security Update or Incident Memo",
+              )}
+              className="h-10 text-xs border-border/80 bg-background/90 focus-visible:ring-ember font-sans rounded-lg"
             />
           </div>
 
           {/* Document Classification Chips */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-foreground">Document Classification</Label>
+            <Label className="text-xs font-medium text-foreground">
+              {t("upload.classification", "Category")}
+            </Label>
             <div className="flex flex-wrap gap-1.5">
               {KINDS.map((k) => (
                 <button
@@ -277,13 +286,13 @@ function UploadPage() {
               const file = e.dataTransfer.files?.[0];
               if (file) void handleFile(file);
             }}
-            className="rounded-md border border-dashed border-border/90 bg-background/40 px-4 py-5 text-center transition-all hover:border-ember/60 hover:bg-background/80"
+            className="rounded-xl border border-dashed border-border/90 bg-background/40 px-4 py-5 text-center transition-all hover:border-ember/60 hover:bg-background/80"
           >
             <Upload className="mx-auto mb-1.5 size-5 text-muted-foreground/80" />
             <p className="text-xs text-muted-foreground">
-              Drag & drop a text document (.txt, .md, .csv, .json), or{" "}
+              {t("upload.dropzone", "Drop a text file (.txt, .md, .csv, .json) or browse")}{" "}
               <label className="cursor-pointer text-ember font-semibold hover:underline">
-                browse files
+                {t("common.browse", "browse files")}
                 <input
                   type="file"
                   className="hidden"
@@ -305,17 +314,23 @@ function UploadPage() {
                 className="text-xs font-medium text-foreground flex items-center gap-1.5"
               >
                 <FileText className="size-3.5 text-ember" />
-                Raw Source Text
+                {t("upload.rawText", "Source Text")}
               </Label>
 
               <div className="flex items-center gap-3 font-mono text-[11px] text-muted-foreground">
-                <span>{charCount.toLocaleString()} chars</span>
+                <span>
+                  {charCount.toLocaleString()} {t("upload.chars", "chars")}
+                </span>
                 <span>•</span>
-                <span>{wordCount.toLocaleString()} words</span>
+                <span>
+                  {wordCount.toLocaleString()} {t("upload.words", "words")}
+                </span>
                 {lineCount > 1 && (
                   <>
                     <span>•</span>
-                    <span>{lineCount} lines</span>
+                    <span>
+                      {lineCount} {t("upload.lines", "lines")}
+                    </span>
                   </>
                 )}
               </div>
@@ -325,9 +340,12 @@ function UploadPage() {
               id="raw-source-text"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              rows={11}
-              placeholder="Paste or type any content here... From a 1-sentence quick alert to an extensive 100-page policy manual. All languages and lengths are accepted."
-              className="font-mono text-xs border-border/80 bg-background/90 focus-visible:ring-ember leading-relaxed resize-y"
+              rows={10}
+              placeholder={t(
+                "upload.rawTextPlaceholder",
+                "Type or paste your text here... Accepts any size and all languages.",
+              )}
+              className="font-mono text-xs border-border/80 bg-background/90 focus-visible:ring-ember leading-relaxed resize-y rounded-lg"
             />
           </div>
 
@@ -336,17 +354,17 @@ function UploadPage() {
             id="run-raw-understanding-btn"
             onClick={runRawUnderstanding}
             disabled={busy || !trimmedText}
-            className="w-full h-11 bg-ember text-ember-foreground font-semibold text-xs uppercase tracking-widest hover:bg-ember/90 shadow-md transition-all flex items-center justify-center gap-2"
+            className="w-full h-11 bg-ember text-ember-foreground font-semibold text-xs tracking-wider hover:bg-ember/90 shadow-md transition-all flex items-center justify-center gap-2 rounded-lg"
           >
             {busy ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                <span>Running Raw Understanding & Fact-Lock Pipeline...</span>
+                <span>{t("upload.processingBtn", "Processing Source...")}</span>
               </>
             ) : (
               <>
                 <CheckCircle2 className="size-4" />
-                <span>Run Raw Understanding & Fact-Lock</span>
+                <span>{t("upload.processBtn", "Process Source")}</span>
               </>
             )}
           </Button>
@@ -354,44 +372,55 @@ function UploadPage() {
 
         {/* Verification & Guarantees Column */}
         <aside className="space-y-5 lg:col-span-4">
-          <div className="rounded-lg border border-border/80 bg-surface/90 p-5 text-xs space-y-3">
+          <div className="rounded-xl border border-border/80 bg-surface/90 p-5 text-xs space-y-3 shadow-xs">
             <p className="font-mono text-xs font-semibold text-ember flex items-center gap-1.5">
               <ShieldCheck className="size-4" />
-              Verified Processing Guarantees
+              {t("upload.guarantees", "Core Guarantees")}
             </p>
             <ul className="space-y-2.5 text-muted-foreground leading-relaxed">
               <li className="flex items-start gap-2">
                 <FileCheck2 className="size-3.5 text-ember shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-foreground">Any Size Accepted:</strong> Accepts
-                  single-line alerts, memos, or multi-chapter reports without arbitrary cutoffs.
+                  <strong className="text-foreground">
+                    {t("upload.g1Title", "Any Length Accepted:")}
+                  </strong>{" "}
+                  {t(
+                    "upload.g1Desc",
+                    "From a 1-line alert to extensive multi-chapter documents.",
+                  )}
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <FileCheck2 className="size-3.5 text-ember shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-foreground">Deterministic Passage Chunks:</strong> Every
-                  statement is indexed to verifiable passage coordinates <code>[P1]</code>.
+                  <strong className="text-foreground">
+                    {t("upload.g2Title", "Source-Linked Passages:")}
+                  </strong>{" "}
+                  {t("upload.g2Desc", "Every sentence connects to verifiable source passages.")}
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <FileCheck2 className="size-3.5 text-ember shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-foreground">Strict Fact-Locking:</strong> Numbers, dates,
-                  names, and critical directives are locked to eliminate hallucinations.
+                  <strong className="text-foreground">
+                    {t("upload.g3Title", "Fact Protection:")}
+                  </strong>{" "}
+                  {t("upload.g3Desc", "Numbers, dates, and names remain locked.")}
                 </div>
               </li>
             </ul>
           </div>
 
-          <div className="rounded-lg border border-border/80 bg-surface/90 p-5 text-xs space-y-2">
+          <div className="rounded-xl border border-border/80 bg-surface/90 p-5 text-xs space-y-2 shadow-xs">
             <p className="font-mono text-[11px] font-semibold text-foreground flex items-center gap-1.5">
               <HelpCircle className="size-3.5 text-ember" />
-              System Status
+              {t("upload.statusTitle", "System Ready")}
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Database and verification engine connected. Once raw understanding completes, you can
-              generate audited briefs, public advisories, social summaries, and translations.
+              {t(
+                "upload.statusDesc",
+                "Ready to process. Next you can generate executive briefs, advisories, or notices.",
+              )}
             </p>
           </div>
         </aside>

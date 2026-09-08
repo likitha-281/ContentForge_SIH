@@ -10,6 +10,7 @@ import { DemoNotice } from "@/components/trust";
 import { useLiveQuery } from "@/hooks/use-live-query";
 import { supabase } from "@/integrations/supabase/client";
 import { analyzeSource } from "@/lib/pipeline.functions";
+import { useI18n } from "@/context/language-context";
 
 export const Route = createFileRoute("/_authenticated/processing/$jobId")({
   head: () => ({

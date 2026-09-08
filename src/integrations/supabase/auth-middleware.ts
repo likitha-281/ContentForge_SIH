@@ -1,117 +1,57 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "./types";
 import { ensureValidUuid } from "@/lib/auth-service";
-
-function isNewSupabaseApiKey(value: string): boolean {
-  return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
-}
-
-function createSupabaseFetch(supabaseKey: string): typeof fetch {
-  return (input, init) => {
-    const headers = new Headers(
-      typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
-    );
-
-    if (init?.headers) {
-      new Headers(init.headers).forEach((value, key) => headers.set(key, value));
-    }
-
-    // New Supabase API keys are opaque strings, not bearer JWTs.
-    if (
-      isNewSupabaseApiKey(supabaseKey) &&
-      headers.get("Authorization") === `Bearer ${supabaseKey}`
-    ) {
-      headers.delete("Authorization");
-    }
-
-    headers.set("apikey", supabaseKey);
-    return fetch(input, { ...init, headers });
-  };
-}
+import { createLocalSupabaseClient } from "@/lib/db.server";
+import { parseJwt, createOperatorJwt } from "@/lib/jwt-utils";
 
 export const requireSupabaseAuth = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
-    const SUPABASE_URL = process.env["SUPABASE_URL"] || process.env["VITE_SUPABASE_URL"];
-    const SUPABASE_PUBLISHABLE_KEY =
-      process.env["SUPABASE_PUBLISHABLE_KEY"] ||
-      process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-      process.env["VITE_SUPABASE_ANON_KEY"] ||
-      process.env["SUPABASE_ANON_KEY"];
-
-    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-      const missing = [
-        ...(!SUPABASE_URL ? ["SUPABASE_URL"] : []),
-        ...(!SUPABASE_PUBLISHABLE_KEY ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
-      ];
-      const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Connect Supabase in Lovable Cloud.`;
-      console.error(`[Supabase] ${message}`);
-      throw new Error(message);
-    }
-
     const request = getRequest();
     let authHeader = request?.headers?.get("authorization");
 
-    // Provide default operator bearer token if not explicitly present
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      authHeader = "Bearer operator-token-10000000-0000-4000-8000-000000000001";
+    let token = authHeader?.replace("Bearer ", "").trim();
+
+    if (!token) {
+      token = createOperatorJwt(
+        "10000000-0000-4000-8000-000000000001",
+        "operator@intelliforge.ai",
+      );
     }
 
-    const token =
-      authHeader.replace("Bearer ", "").trim() ||
-      "operator-token-10000000-0000-4000-8000-000000000001";
+    let validUserId = "10000000-0000-4000-8000-000000000001";
+    let claims: Record<string, unknown> = {
+      sub: validUserId,
+      role: "operator",
+      email: "operator@intelliforge.ai",
+    };
 
-    const supabase = createClient<Database>(SUPABASE_URL!, SUPABASE_PUBLISHABLE_KEY!, {
-      global: {
-        fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY!),
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-      auth: {
-        storage: undefined,
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-    });
-
-    if (token.startsWith("operator-token-")) {
-      const rawOperatorId = token.replace("operator-token-", "");
-      const validUserId = ensureValidUuid(rawOperatorId);
-      return next({
-        context: {
-          supabase,
-          userId: validUserId,
-          claims: { sub: validUserId, role: "operator" },
-        },
-      });
-    }
-
+    // 1. Check if standard 3-part JWT
     if (token.split(".").length === 3) {
-      try {
-        const { data, error } = await supabase.auth.getClaims(token);
-        if (!error && data?.claims?.sub) {
-          const validUserId = ensureValidUuid(data.claims.sub);
-          return next({
-            context: {
-              supabase,
-              userId: validUserId,
-              claims: data.claims,
-            },
-          });
-        }
-      } catch {
-        // Fallback to operator
+      const parsed = parseJwt(token);
+      if (parsed?.sub) {
+        validUserId = ensureValidUuid(parsed.sub);
+        claims = {
+          ...parsed,
+          sub: validUserId,
+        };
       }
+    } else if (token.startsWith("operator-token-") || token.startsWith("operator-")) {
+      // Legacy operator string
+      const rawId = token.replace("operator-token-", "").replace("operator-", "");
+      validUserId = ensureValidUuid(rawId);
+      claims = { sub: validUserId, role: "operator" };
+    } else {
+      validUserId = ensureValidUuid(token);
+      claims = { sub: validUserId, role: "operator" };
     }
 
-    const fallbackUserId = ensureValidUuid(token);
+    const supabase = createLocalSupabaseClient(validUserId);
+
     return next({
       context: {
-        supabase,
-        userId: fallbackUserId,
-        claims: { sub: fallbackUserId, role: "operator" },
+        supabase: supabase as any,
+        userId: validUserId,
+        claims,
       },
     });
   },
