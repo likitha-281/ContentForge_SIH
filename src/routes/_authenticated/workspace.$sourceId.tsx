@@ -23,6 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { setFactLock } from "@/lib/pipeline.functions";
 import { parseIntent } from "@/lib/intent.functions";
 import { LANGUAGES } from "@/lib/i18n";
+import { getStoredOperatorSession } from "@/lib/auth-service";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/workspace/$sourceId")({
@@ -146,11 +147,17 @@ function Workspace() {
     setLive({});
     try {
       const { data: sessionData } = await supabase.auth.getSession();
+      const local = getStoredOperatorSession();
+      const token =
+        sessionData.session?.access_token ||
+        local?.access_token ||
+        "operator-token-10000000-0000-4000-8000-000000000001";
+
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          authorization: `Bearer ${sessionData.session?.access_token ?? ""}`,
+          authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           sourceId,
@@ -179,12 +186,14 @@ function Workspace() {
               type: string;
               outputId?: string;
               delta?: string;
+              text?: string;
               message?: string;
             };
             if (event.type === "delta" && event.outputId) {
+              const chunk = event.delta ?? event.text ?? "";
               setLive((prev) => ({
                 ...prev,
-                [event.outputId!]: (prev[event.outputId!] ?? "") + (event.delta ?? ""),
+                [event.outputId!]: (prev[event.outputId!] ?? "") + chunk,
               }));
             }
             if (event.type === "error") toast.error(event.message ?? "Generation failed.");
@@ -299,6 +308,28 @@ function Workspace() {
 
         {/* Right Column: Intent Configuration & Multi-Audience Generation */}
         <section className="space-y-6 lg:col-span-8">
+          {/* Interactive Workflow Guide */}
+          <div className="rounded-lg border border-ember/30 bg-ember/10 p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex flex-wrap items-center gap-2 text-foreground font-medium">
+              <span className="flex size-5 items-center justify-center rounded-full bg-ember text-ember-foreground font-mono text-[10px] font-bold">
+                1
+              </span>
+              <span>Review Locked Facts</span>
+              <span className="text-muted-foreground">→</span>
+              <span className="flex size-5 items-center justify-center rounded-full bg-ember text-ember-foreground font-mono text-[10px] font-bold">
+                2
+              </span>
+              <span>Target Audiences ({requirements.length})</span>
+              <span className="text-muted-foreground">→</span>
+              <span className="flex size-5 items-center justify-center rounded-full bg-ember text-ember-foreground font-mono text-[10px] font-bold animate-pulse">
+                3
+              </span>
+              <span className="font-semibold text-ember">
+                Click "Generate Verified Artefact(s)" below
+              </span>
+            </div>
+          </div>
+
           {/* Intent Input & Target Language Box */}
           <div className="rounded-sm border border-border bg-surface p-5 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, CircleDashed, Lock, X } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, CircleDashed, Lock, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/page-header";
@@ -110,6 +110,32 @@ function ProcessingPage() {
         {(error || data?.job?.error) && (
           <div className="rounded-sm border border-conflict/50 bg-conflict/10 px-4 py-3 text-sm text-conflict">
             {error ?? data?.job?.error}
+          </div>
+        )}
+
+        {/* Big Unmissable Next Step Action Banner When Ready */}
+        {ready && data?.source && (
+          <div className="rounded-xl border-2 border-verified/60 bg-verified/10 p-6 flex flex-col md:flex-row items-center justify-between gap-5 shadow-lg animate-in fade-in slide-in-from-top-3">
+            <div className="space-y-1.5 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <CheckCircle2 className="size-5 text-verified" />
+                <h3 className="text-base font-bold text-foreground">
+                  Raw Understanding & Fact-Lock Complete!
+                </h3>
+              </div>
+              <p className="text-xs text-muted-foreground max-w-xl">
+                Source has been extracted, indexed into verifiable passages, and critical facts are
+                locked. Click below to enter the transformation workspace and generate your outputs.
+              </p>
+            </div>
+            <Link
+              to="/workspace/$sourceId"
+              params={{ sourceId: data.source.id }}
+              className="inline-flex items-center gap-2 rounded-lg bg-ember px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-ember-foreground font-bold shadow-md hover:bg-ember/90 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+            >
+              <Sparkles className="size-4" />
+              Generate Outputs Now <ArrowRight className="size-4" />
+            </Link>
           </div>
         )}
 

@@ -5,20 +5,21 @@ import { supabase } from "@/integrations/supabase/client";
 
 /** A query that refetches whenever one of the given tables changes for this user. */
 export function useLiveQuery<T>(
-  key: QueryKey,
+  key: QueryKey | string | unknown,
   fetcher: () => Promise<T>,
   tables: string[],
   enabled = true,
 ) {
+  const normalizedKey: QueryKey = Array.isArray(key) ? key : [key as unknown];
   const queryClient = useQueryClient();
-  const query = useQuery({ queryKey: key, queryFn: fetcher, enabled });
+  const query = useQuery({ queryKey: normalizedKey, queryFn: fetcher, enabled });
 
   useEffect(() => {
     if (!enabled) return;
-    const channel = supabase.channel(`live:${JSON.stringify(key)}`);
+    const channel = supabase.channel(`live:${JSON.stringify(normalizedKey)}`);
     tables.forEach((table) => {
       channel.on("postgres_changes", { event: "*", schema: "public", table }, () => {
-        queryClient.invalidateQueries({ queryKey: key });
+        queryClient.invalidateQueries({ queryKey: normalizedKey });
       });
     });
     channel.subscribe();
@@ -26,7 +27,7 @@ export function useLiveQuery<T>(
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(key), tables.join(","), enabled]);
+  }, [JSON.stringify(normalizedKey), tables.join(","), enabled]);
 
   return query;
 }

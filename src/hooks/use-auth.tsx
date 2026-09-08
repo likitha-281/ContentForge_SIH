@@ -6,7 +6,7 @@ import { getStoredOperatorSession } from "@/lib/auth-service";
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(() => getStoredOperatorSession());
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !getStoredOperatorSession());
 
   useEffect(() => {
     // 1. Supabase state listener

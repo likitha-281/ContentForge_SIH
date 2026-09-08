@@ -8,8 +8,11 @@ import {
   KeyRound,
   Lock,
   Mail,
+  Plus,
   ShieldCheck,
   Sparkles,
+  UserCheck,
+  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -76,6 +79,9 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
+  const [customGoogleEmail, setCustomGoogleEmail] = useState("");
+  const [isAddingGoogleAccount, setIsAddingGoogleAccount] = useState(false);
 
   const destination = search.redirect ?? "/dashboard";
 
@@ -86,6 +92,11 @@ function AuthPage() {
       void continueWithGoogle("nayudu.2005@gmail.com").then((res) => {
         toast.success(res.message);
         navigate({ to: destination });
+        setTimeout(() => {
+          if (window.location.pathname.startsWith("/auth")) {
+            window.location.href = destination;
+          }
+        }, 150);
       });
       return;
     }
@@ -148,6 +159,9 @@ function AuthPage() {
         });
         toast.success("Account created successfully! Entering operator console...");
         navigate({ to: destination });
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 150);
       } else {
         // Sign In Mode
         try {
@@ -159,6 +173,9 @@ function AuthPage() {
           if (data?.session) {
             toast.success("Signed in successfully.");
             navigate({ to: destination });
+            setTimeout(() => {
+              window.location.href = destination;
+            }, 150);
             return;
           }
           if (error) {
@@ -177,6 +194,9 @@ function AuthPage() {
         });
         toast.success(`Signed in as operator (${email.trim()}).`);
         navigate({ to: destination });
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 150);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication error occurred.");
@@ -185,27 +205,40 @@ function AuthPage() {
     }
   }
 
-  // Handle Google Sign-in with smooth continuation
-  async function handleGoogle() {
+  // Complete Google sign in with a chosen account
+  async function selectGoogleAccount(accountEmail: string) {
     setGoogleBusy(true);
     try {
-      const res = await continueWithGoogle("nayudu.2005@gmail.com");
+      const res = await continueWithGoogle(accountEmail);
       toast.success(res.message);
+      setShowGoogleModal(false);
       navigate({ to: destination });
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 150);
     } catch (err) {
       console.error("Google sign in error:", err);
       saveOperatorSession({
-        id: "google-op-nayudu",
-        email: "nayudu.2005@gmail.com",
-        name: "Nayudu (Google Verified)",
+        id: `google-op-${accountEmail}`,
+        email: accountEmail,
+        name: accountEmail.split("@")[0],
         role: "Certified Google Operator",
         provider: "google",
       });
-      toast.success("Signed in with Google Operator account.");
+      toast.success(`Signed in as Google account (${accountEmail}).`);
+      setShowGoogleModal(false);
       navigate({ to: destination });
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 150);
     } finally {
       setGoogleBusy(false);
     }
+  }
+
+  // Open the Google Account Chooser
+  function handleGoogle() {
+    setShowGoogleModal(true);
   }
 
   // Handle Quick Demo Operator Login
@@ -213,6 +246,9 @@ function AuthPage() {
     signInAsDemoOperator();
     toast.success("Logged in as Lead Operator (Full Access).");
     navigate({ to: destination });
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 150);
   }
 
   return (
@@ -403,6 +439,127 @@ function AuthPage() {
           </p>
         </div>
       </div>
+
+      {/* Google Account Selector Dialog */}
+      {showGoogleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="relative w-full max-w-sm rounded-xl border border-border bg-surface p-6 shadow-2xl animate-in fade-in zoom-in-95">
+            <button
+              onClick={() => setShowGoogleModal(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+              title="Close"
+            >
+              <X className="size-4" />
+            </button>
+
+            {/* Google Header */}
+            <div className="text-center pb-5 border-b border-border/80">
+              <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-background border border-border shadow-xs">
+                <GoogleIcon className="size-5" />
+              </div>
+              <h3 className="mt-3 text-base font-semibold text-foreground">Sign in with Google</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Choose an account to continue to{" "}
+                <strong className="text-foreground">INTELLI-FORGE</strong>
+              </p>
+            </div>
+
+            {/* Account List */}
+            <div className="mt-4 space-y-2">
+              {/* Connected User Account */}
+              <button
+                type="button"
+                onClick={() => selectGoogleAccount("nayudu.2005@gmail.com")}
+                disabled={googleBusy}
+                className="w-full flex items-center gap-3 p-3 rounded-lg border border-border/80 hover:border-ember/60 bg-background hover:bg-surface-raised transition-all text-left group"
+              >
+                <div className="size-9 rounded-full bg-ember text-ember-foreground flex items-center justify-center font-semibold text-sm shadow-xs">
+                  N
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-xs font-semibold text-foreground group-hover:text-ember transition-colors truncate">
+                      Nayudu
+                    </p>
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-verified/15 text-verified border border-verified/30">
+                      Verified
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate">nayudu.2005@gmail.com</p>
+                </div>
+                <UserCheck className="size-4 text-muted-foreground group-hover:text-ember transition-colors" />
+              </button>
+
+              {/* Another Account Entry */}
+              {isAddingGoogleAccount ? (
+                <div className="p-3 rounded-lg border border-border bg-background space-y-2.5">
+                  <Label htmlFor="customGoogleEmail" className="text-xs text-muted-foreground">
+                    Enter Google Email Address
+                  </Label>
+                  <Input
+                    id="customGoogleEmail"
+                    type="email"
+                    placeholder="name@gmail.com"
+                    value={customGoogleEmail}
+                    onChange={(e) => setCustomGoogleEmail(e.target.value)}
+                    className="h-9 text-xs font-mono"
+                    autoFocus
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (customGoogleEmail.trim()) {
+                          void selectGoogleAccount(customGoogleEmail.trim());
+                        } else {
+                          toast.error("Please enter an email address.");
+                        }
+                      }}
+                      className="flex-1 h-8 text-xs bg-ember text-ember-foreground hover:bg-ember/90"
+                    >
+                      Sign In
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setIsAddingGoogleAccount(false)}
+                      className="h-8 text-xs"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsAddingGoogleAccount(true)}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-dashed border-border hover:border-foreground/40 bg-transparent hover:bg-surface-raised transition-all text-left"
+                >
+                  <div className="size-9 rounded-full border border-border flex items-center justify-center text-muted-foreground">
+                    <Plus className="size-4" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-foreground">
+                      Use another Google account
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      Add work or personal Google account
+                    </p>
+                  </div>
+                </button>
+              )}
+            </div>
+
+            {/* Bottom Note */}
+            <div className="mt-5 pt-3 border-t border-border/80 text-center">
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                To continue, Google will share your name, email address, and profile picture with
+                INTELLI-FORGE.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

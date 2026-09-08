@@ -72,7 +72,7 @@ async function loadDashboard() {
 
 export function Dashboard() {
   const { t } = useI18n();
-  const { data, isLoading } = useLiveQuery("dashboard" as never, loadDashboard, [
+  const { data, isLoading } = useLiveQuery(["dashboard"] as never, loadDashboard, [
     "sources",
     "outputs",
     "output_claims",

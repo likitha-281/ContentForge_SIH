@@ -150,7 +150,7 @@ export const Route = createFileRoute("/api/generate")({
                 )) {
                   content += delta;
                   sinceFlush += delta.length;
-                  send({ type: "delta", outputId: output.id, text: delta });
+                  send({ type: "delta", outputId: output.id, delta, text: delta });
                   if (sinceFlush > 600) {
                     sinceFlush = 0;
                     await supabase.from("outputs").update({ content }).eq("id", output.id);
