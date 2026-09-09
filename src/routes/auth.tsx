@@ -99,7 +99,7 @@ function AuthPage() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && (event === "SIGNED_IN" || event === "USER_UPDATED" || event === "TOKEN_REFRESHED")) {
-        navigate({ to: destination });
+        setTimeout(() => navigate({ to: destination }), 0);
       }
     });
 
