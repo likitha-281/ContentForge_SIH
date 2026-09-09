@@ -1,3 +1,26 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Nested duplicate folder
+sih_prototype_basic/
+
 # Logs
 logs
 *.log
@@ -7,6 +30,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Build and Framework artifacts
 node_modules
 dist
 dist-ssr

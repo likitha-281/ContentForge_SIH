@@ -23,8 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { setFactLock } from "@/lib/pipeline.functions";
 import { parseIntent } from "@/lib/intent.functions";
 import { LANGUAGES } from "@/lib/i18n";
-import { getStoredOperatorSession } from "@/lib/auth-service";
-import { createOperatorJwt } from "@/lib/jwt-utils";
+import { apiClient } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/workspace/$sourceId")({
@@ -148,63 +147,23 @@ function Workspace() {
     setLive({});
     try {
       const { data: sessionData } = await supabase.auth.getSession();
-      const local = getStoredOperatorSession();
-      const token =
-        sessionData.session?.access_token ||
-        local?.access_token ||
-        createOperatorJwt("10000000-0000-4000-8000-000000000001", "operator@intelliforge.ai");
+      const token = sessionData.session?.access_token;
+      if (!token) {
+        toast.error("You must be logged in to transform content.");
+        return;
+      }
 
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          sourceId,
-          language: targetLanguage,
-          intentPrompt: request,
-          artefacts: requirements,
-        }),
+      const res = await apiClient.generate({
+        sourceId,
+        language: targetLanguage,
+        intentPrompt: request,
+        artefacts: requirements,
       });
 
-      if (!response.body) throw new Error("No stream returned.");
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split("\n\n");
-        buffer = parts.pop() ?? "";
-        for (const part of parts) {
-          const line = part.split("\n").find((l) => l.startsWith("data:"));
-          if (!line) continue;
-          try {
-            const event = JSON.parse(line.slice(5).trim()) as {
-              type: string;
-              outputId?: string;
-              delta?: string;
-              text?: string;
-              message?: string;
-            };
-            if (event.type === "delta" && event.outputId) {
-              const chunk = event.delta ?? event.text ?? "";
-              setLive((prev) => ({
-                ...prev,
-                [event.outputId!]: (prev[event.outputId!] ?? "") + chunk,
-              }));
-            }
-            if (event.type === "error") toast.error(event.message ?? "Generation failed.");
-          } catch {
-            /* ignore partial frames */
-          }
-        }
+      if (res?.results) {
+        toast.success(`Generated ${res.results.length} verified transformation artefacts!`);
       }
-      toast.success("Generation and verification complete!");
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err instanceof Error ? err.message : "Generation failed.");
     } finally {
       setStreaming(false);

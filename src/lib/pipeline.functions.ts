@@ -3,8 +3,6 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createSupabaseServerClient } from "@/integrations/supabase/client.server";
-import { getDb } from "./db.server";
-import { createOperatorJwt } from "./jwt-utils";
 import { chatJson, MODELS } from "./ai.server";
 import { appendAudit } from "./audit.server";
 import { chunkDocument } from "./text.server";
@@ -156,69 +154,33 @@ export const analyzeSource = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ jobId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const db = getDb();
 
-    // 1. Resolve job with user-client or fallback to direct DB lookup
-    let jobOwnerId = userId;
-    let jobData: { id: string; source_id: string; stages?: any } | null = null;
-
-    const { data: directJob } = await supabase
+    // 1. Resolve job with authenticated Supabase client
+    const { data: jobData, error: jobErr } = await supabase
       .from("jobs")
       .select("id, source_id, stages, user_id")
       .eq("id", data.jobId)
-      .maybeSingle();
+      .single();
 
-    if (directJob) {
-      jobData = directJob;
-      if ((directJob as any).user_id) jobOwnerId = (directJob as any).user_id;
-    } else {
-      const row = db.prepare("SELECT * FROM jobs WHERE id = ?").get(data.jobId) as any;
-      if (row) {
-        jobOwnerId = row.user_id || userId;
-        jobData = {
-          id: row.id,
-          source_id: row.source_id,
-          stages: typeof row.stages === "string" ? JSON.parse(row.stages) : row.stages,
-        };
-      }
+    if (jobErr || !jobData) {
+      throw new Error(`Job record not found: ${jobErr?.message || "unknown"}`);
     }
 
-    if (!jobData) throw new Error("Job record not found.");
-
-    // Build active client scoped to the job's real owner
-    const activeClient =
-      jobOwnerId === userId
-        ? supabase
-        : createSupabaseServerClient(
-            jobOwnerId,
-            createOperatorJwt(jobOwnerId, "operator@intelliforge.ai"),
-          );
-
-    // 2. Resolve source with active client or fallback to direct DB lookup
-    let sourceData: { id: string; title: string; raw_text?: string; kind?: string } | null = null;
-    const { data: directSource } = await activeClient
+    // 2. Resolve source with authenticated Supabase client
+    const { data: sourceData, error: sourceErr } = await supabase
       .from("sources")
       .select("id, title, raw_text, kind")
       .eq("id", jobData.source_id)
-      .maybeSingle();
+      .single();
 
-    if (directSource) {
-      sourceData = directSource;
-    } else {
-      const sRow = db.prepare("SELECT * FROM sources WHERE id = ?").get(jobData.source_id) as any;
-      if (sRow) {
-        sourceData = {
-          id: sRow.id,
-          title: sRow.title,
-          raw_text: sRow.raw_text,
-          kind: sRow.kind,
-        };
-      }
+    if (sourceErr || !sourceData) {
+      throw new Error(`Source record not found: ${sourceErr?.message || "unknown"}`);
     }
 
-    if (!sourceData) throw new Error("Source record not found.");
     const source = sourceData;
     const job = jobData;
+    const activeClient = supabase;
+    const jobOwnerId = userId;
 
     const stages = initialStages();
     const setStage = async (key: string, status: StageState["status"], note?: string) => {

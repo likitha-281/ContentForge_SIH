@@ -1,0 +1,13 @@
+﻿services:
+  - type: web
+    name: intelliforge-backend
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SUPABASE_URL
+        value: https://toqcdcapidfcgxfdqcvy.supabase.co
+      - key: SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_tRxdda-sMwyS2zBtRw6-zA_qIVzKll3
+      - key: CORS_ORIGINS
+        value: "*"

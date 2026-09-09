@@ -5,33 +5,27 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  HelpCircle,
   KeyRound,
   Lock,
   Mail,
-  Plus,
+  RefreshCw,
+  ShieldAlert,
   ShieldCheck,
   Sparkles,
-  UserCheck,
   X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  continueWithGoogle,
-  saveOperatorSession,
-  signInAsDemoOperator,
-  getStoredOperatorSession,
-} from "@/lib/auth-service";
+import { supabase, SUPABASE_URL } from "@/integrations/supabase/client";
+import { formatSupabaseAuthIssue, isGoogleAuthEnabled } from "@/lib/auth-config";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-    provider: typeof search.provider === "string" ? search.provider : undefined,
-    auto: typeof search.auto === "string" ? search.auto : undefined,
   }),
   head: () => ({
     meta: [
@@ -77,56 +71,47 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+
+  // Email confirmation state
+  const [confirmationNotice, setConfirmationNotice] = useState<{
+    email: string;
+    show: boolean;
+    isUnconfirmedLogin?: boolean;
+  }>({ email: "", show: false });
+
+  // Google OAuth configuration guidance modal
   const [showGoogleModal, setShowGoogleModal] = useState(false);
-  const [customGoogleEmail, setCustomGoogleEmail] = useState("");
-  const [isAddingGoogleAccount, setIsAddingGoogleAccount] = useState(false);
 
   const destination = search.redirect ?? "/dashboard";
 
-  // Check existing session or handle auto-oauth entry
+  // Listen to Supabase auth state and redirect once session is confirmed
   useEffect(() => {
-    // If auto-redirected from Google OAuth callback or ~oauth route
-    if (search.provider === "google" || search.auto === "true") {
-      void continueWithGoogle("nayudu.2005@gmail.com").then((res) => {
-        toast.success(res.message);
-        navigate({ to: destination });
-        setTimeout(() => {
-          if (window.location.pathname.startsWith("/auth")) {
-            window.location.href = destination;
-          }
-        }, 150);
-      });
-      return;
-    }
-
-    // Check if session exists in Supabase or local operator storage
-    const local = getStoredOperatorSession();
-    if (local) {
-      navigate({ to: destination });
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data }) => {
-      if (data?.session) {
-        navigate({ to: destination });
-      }
-    });
-
-    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate({ to: destination });
       }
     });
 
-    return () => subscription.subscription.unsubscribe();
-  }, [destination, navigate, search.auto, search.provider]);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && (event === "SIGNED_IN" || event === "USER_UPDATED" || event === "TOKEN_REFRESHED")) {
+        navigate({ to: destination });
+      }
+    });
 
-  // Handle email/password registration & login
+    return () => subscription.unsubscribe();
+  }, [destination, navigate]);
+
+  // Handle email/password sign-in and sign-up
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) {
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail) {
       toast.error("Please enter a valid email address.");
       return;
     }
@@ -138,130 +123,140 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        // Attempt Supabase sign up
-        try {
-          await supabase.auth.signUp({
-            email: email.trim(),
-            password,
-            options: { emailRedirectTo: window.location.origin },
-          });
-        } catch {
-          // Continue to operator session
+        const { data, error } = await supabase.auth.signUp({
+          email: cleanEmail,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth`,
+            data: {
+              full_name: fullName.trim() || cleanEmail.split("@")[0],
+            },
+          },
+        });
+
+        if (error) {
+          toast.error(formatSupabaseAuthIssue(error.message));
+          return;
         }
 
-        // Instantly save operator session and enter app so user is immediately connected
-        saveOperatorSession({
-          id: `op-${email.trim()}`,
-          email: email.trim(),
-          name: email.trim().split("@")[0],
-          role: "Certified Operator",
-          provider: "email",
-        });
-        toast.success("Account created successfully! Entering operator console...");
-        navigate({ to: destination });
-        setTimeout(() => {
-          window.location.href = destination;
-        }, 150);
+        // Check if email confirmation is required by Supabase
+        if (data.user && !data.session) {
+          setConfirmationNotice({
+            email: cleanEmail,
+            show: true,
+            isUnconfirmedLogin: false,
+          });
+          toast.info("Account registered! Email confirmation required.");
+          return;
+        }
+
+        if (data.session) {
+          toast.success("Account created and authenticated!");
+          navigate({ to: destination });
+          return;
+        }
       } else {
-        // Sign In Mode
-        try {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password,
-          });
+        // Sign-in mode
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password,
+        });
 
-          if (data?.session) {
-            toast.success("Signed in successfully.");
-            navigate({ to: destination });
-            setTimeout(() => {
-              window.location.href = destination;
-            }, 150);
-            return;
+        if (error) {
+          const errMsg = error.message.toLowerCase();
+          if (errMsg.includes("email not confirmed") || (error as any).code === "email_not_confirmed") {
+            setConfirmationNotice({
+              email: cleanEmail,
+              show: true,
+              isUnconfirmedLogin: true,
+            });
+            toast.error("Account email is not confirmed yet. Please verify your inbox.");
+          } else {
+            toast.error(error.message || "Invalid login credentials.");
           }
-          if (error) {
-            // Graceful fallback to operator session
-          }
-        } catch {
-          // Graceful fallback
+          return;
         }
 
-        saveOperatorSession({
-          id: `op-${email.trim()}`,
-          email: email.trim(),
-          name: email.trim().split("@")[0],
-          role: "Operator",
-          provider: "email",
-        });
-        toast.success(`Signed in as operator (${email.trim()}).`);
-        navigate({ to: destination });
-        setTimeout(() => {
-          window.location.href = destination;
-        }, 150);
+        if (data.session) {
+          toast.success("Authenticated successfully.");
+          navigate({ to: destination });
+          return;
+        }
       }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Authentication error occurred.");
+    } catch (err: any) {
+      toast.error(err?.message || "Authentication error occurred.");
     } finally {
       setBusy(false);
     }
   }
 
-  // Complete Google sign in with a chosen account
-  async function selectGoogleAccount(accountEmail: string) {
+  // Handle Google OAuth
+  async function handleGoogleSignIn() {
+    if (!isGoogleAuthEnabled()) {
+      setShowGoogleModal(true);
+      toast.error(
+        "Google sign-in is not enabled yet. Add the OAuth client ID and secret in Supabase first.",
+      );
+      return;
+    }
+
     setGoogleBusy(true);
     try {
-      const res = await continueWithGoogle(accountEmail);
-      toast.success(res.message);
-      setShowGoogleModal(false);
-      navigate({ to: destination });
-      setTimeout(() => {
-        window.location.href = destination;
-      }, 150);
-    } catch (err) {
-      console.error("Google sign in error:", err);
-      saveOperatorSession({
-        id: `google-op-${accountEmail}`,
-        email: accountEmail,
-        name: accountEmail.split("@")[0],
-        role: "Certified Google Operator",
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth`,
+        },
       });
-      toast.success(`Signed in as Google account (${accountEmail}).`);
-      setShowGoogleModal(false);
-      navigate({ to: destination });
-      setTimeout(() => {
-        window.location.href = destination;
-      }, 150);
+
+      if (error) {
+        const friendly = formatSupabaseAuthIssue(error.message);
+        if (
+          error.message.toLowerCase().includes("missing oauth secret") ||
+          error.message.toLowerCase().includes("validation_failed") ||
+          error.message.toLowerCase().includes("unsupported provider")
+        ) {
+          setShowGoogleModal(true);
+        }
+        toast.error(friendly);
+      }
+    } catch (err: any) {
+      const friendly = formatSupabaseAuthIssue(err?.message || "Google authentication failed.");
+      toast.error(friendly);
     } finally {
       setGoogleBusy(false);
     }
   }
 
-  // Open the Google Account Chooser
-  function handleGoogle() {
-    setShowGoogleModal(true);
-  }
-
-  // Handle Quick Demo Operator Login
-  function handleQuickDemo() {
-    signInAsDemoOperator();
-    toast.success("Logged in as Lead Operator (Full Access).");
-    navigate({ to: destination });
-    setTimeout(() => {
-      window.location.href = destination;
-    }, 150);
+  // Handle resending verification email
+  async function handleResendEmail() {
+    if (!confirmationNotice.email) return;
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: confirmationNotice.email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth`,
+        },
+      });
+      if (error) {
+        toast.error(formatSupabaseAuthIssue(error.message));
+      } else {
+        toast.success(`Verification link resent to ${confirmationNotice.email}`);
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to resend confirmation email.");
+    }
   }
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12">
-      {/* Subtle Background Glow Elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-96 w-[600px] rounded-full bg-ember/10 blur-3xl" />
         <div className="absolute -bottom-40 right-10 h-80 w-80 rounded-full bg-surface-raised/40 blur-3xl" />
       </div>
 
-      {/* Main Auth Container */}
       <div className="relative w-full max-w-md">
-        {/* Return to Home link */}
         <div className="mb-4 flex items-center justify-between">
           <Link
             to="/"
@@ -275,9 +270,7 @@ function AuthPage() {
           </span>
         </div>
 
-        {/* Elevated Glass Card */}
-        <div className="rounded-xl border border-border/80 bg-surface/90 p-8 shadow-2xl backdrop-blur-xl transition-all">
-          {/* Brand Header */}
+        <div className="rounded-xl border border-border/80 bg-surface/90 p-8 shadow-2xl backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-border/60 pb-5">
             <div>
               <span className="font-mono text-xs font-bold tracking-[0.25em] text-foreground">
@@ -292,15 +285,18 @@ function AuthPage() {
             </span>
           </div>
 
-          {/* Mode Tabs */}
+          {/* Mode Switcher */}
           <div className="mt-6 flex rounded-lg border border-border/60 bg-background/60 p-1">
             <button
               type="button"
-              onClick={() => setMode("signin")}
+              onClick={() => {
+                setMode("signin");
+                setConfirmationNotice({ email: "", show: false });
+              }}
               className={cn(
-                "flex-1 rounded-md py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all",
+                "flex-1 rounded-md py-1.5 text-center text-xs font-medium transition-all",
                 mode === "signin"
-                  ? "bg-surface text-foreground shadow-xs border border-border/70"
+                  ? "bg-surface text-foreground shadow-xs font-semibold"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -308,11 +304,14 @@ function AuthPage() {
             </button>
             <button
               type="button"
-              onClick={() => setMode("signup")}
+              onClick={() => {
+                setMode("signup");
+                setConfirmationNotice({ email: "", show: false });
+              }}
               className={cn(
-                "flex-1 rounded-md py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all",
+                "flex-1 rounded-md py-1.5 text-center text-xs font-medium transition-all",
                 mode === "signup"
-                  ? "bg-surface text-foreground shadow-xs border border-border/70"
+                  ? "bg-surface text-foreground shadow-xs font-semibold"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -320,242 +319,204 @@ function AuthPage() {
             </button>
           </div>
 
-          {/* Primary Google Sign In */}
-          <div className="mt-6">
-            <Button
-              variant="outline"
-              onClick={handleGoogle}
-              disabled={googleBusy || busy}
-              className="w-full h-10 border-border/80 bg-background hover:bg-surface-raised font-sans text-xs font-medium text-foreground gap-2.5 shadow-xs"
-            >
-              <GoogleIcon className="size-4" />
-              <span>{googleBusy ? "Connecting with Google…" : "Continue with Google"}</span>
-            </Button>
-          </div>
-
-          {/* Divider */}
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-border/70" />
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              or credentials
-            </span>
-            <span className="h-px flex-1 bg-border/70" />
-          </div>
-
-          {/* Email / Password Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="email"
-                className="text-xs font-medium text-foreground flex items-center gap-1.5"
-              >
-                <Mail className="size-3.5 text-muted-foreground" />
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="operator@intelliforge.gov.in"
-                className="h-10 text-xs border-border/80 bg-background/80 focus-visible:ring-ember font-mono"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <Label
-                  htmlFor="password"
-                  className="text-xs font-medium text-foreground flex items-center gap-1.5"
-                >
-                  <Lock className="size-3.5 text-muted-foreground" />
-                  Password
-                </Label>
-                {mode === "signin" && (
-                  <span className="text-[11px] text-muted-foreground">Min. 6 chars</span>
-                )}
-              </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="h-10 text-xs border-border/80 bg-background/80 focus-visible:ring-ember font-mono"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              disabled={busy || googleBusy}
-              className="w-full h-10 bg-ember text-ember-foreground hover:bg-ember/90 font-mono text-xs uppercase tracking-widest font-semibold shadow-sm transition-all"
-            >
-              {busy ? (
-                "Processing…"
-              ) : mode === "signin" ? (
-                <span className="flex items-center justify-center gap-1.5">
-                  Sign In to Console <ArrowRight className="size-3.5" />
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-1.5">
-                  Create Operator Account <CheckCircle2 className="size-3.5" />
-                </span>
-              )}
-            </Button>
-          </form>
-
-          {/* Instant Operator Demo Access */}
-          <div className="mt-5 rounded-lg border border-border/60 bg-surface-raised/40 p-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-mono text-[11px] font-semibold text-foreground flex items-center gap-1.5">
-                  <Sparkles className="size-3 text-ember" />
-                  Evaluation Fast-Track
-                </p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">
-                  Skip registration to test all pipeline features instantly
-                </p>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleQuickDemo}
-                className="h-7 text-[10px] font-mono uppercase tracking-wider border-ember/40 text-ember hover:bg-ember/15"
-              >
-                1-Click Access
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Security & Audit Footer Note */}
-        <div className="mt-4 text-center">
-          <p className="font-mono text-[10px] text-muted-foreground flex items-center justify-center gap-1.5">
-            <KeyRound className="size-3 text-ember" />
-            Hash-chained audit logging active on all operator sessions
-          </p>
-        </div>
-      </div>
-
-      {/* Google Account Selector Dialog */}
-      {showGoogleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-          <div className="relative w-full max-w-sm rounded-xl border border-border bg-surface p-6 shadow-2xl animate-in fade-in zoom-in-95">
-            <button
-              onClick={() => setShowGoogleModal(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
-              title="Close"
-            >
-              <X className="size-4" />
-            </button>
-
-            {/* Google Header */}
-            <div className="text-center pb-5 border-b border-border/80">
-              <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-background border border-border shadow-xs">
-                <GoogleIcon className="size-5" />
-              </div>
-              <h3 className="mt-3 text-base font-semibold text-foreground">Sign in with Google</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Choose an account to continue to{" "}
-                <strong className="text-foreground">INTELLI-FORGE</strong>
-              </p>
-            </div>
-
-            {/* Account List */}
-            <div className="mt-4 space-y-2">
-              {/* Connected User Account */}
-              <button
-                type="button"
-                onClick={() => selectGoogleAccount("nayudu.2005@gmail.com")}
-                disabled={googleBusy}
-                className="w-full flex items-center gap-3 p-3 rounded-lg border border-border/80 hover:border-ember/60 bg-background hover:bg-surface-raised transition-all text-left group"
-              >
-                <div className="size-9 rounded-full bg-ember text-ember-foreground flex items-center justify-center font-semibold text-sm shadow-xs">
-                  N
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-xs font-semibold text-foreground group-hover:text-ember transition-colors truncate">
-                      Nayudu
-                    </p>
-                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-verified/15 text-verified border border-verified/30">
-                      Verified
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate">nayudu.2005@gmail.com</p>
-                </div>
-                <UserCheck className="size-4 text-muted-foreground group-hover:text-ember transition-colors" />
-              </button>
-
-              {/* Another Account Entry */}
-              {isAddingGoogleAccount ? (
-                <div className="p-3 rounded-lg border border-border bg-background space-y-2.5">
-                  <Label htmlFor="customGoogleEmail" className="text-xs text-muted-foreground">
-                    Enter Google Email Address
-                  </Label>
-                  <Input
-                    id="customGoogleEmail"
-                    type="email"
-                    placeholder="name@gmail.com"
-                    value={customGoogleEmail}
-                    onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                    className="h-9 text-xs font-mono"
-                    autoFocus
-                  />
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        if (customGoogleEmail.trim()) {
-                          void selectGoogleAccount(customGoogleEmail.trim());
-                        } else {
-                          toast.error("Please enter an email address.");
-                        }
-                      }}
-                      className="flex-1 h-8 text-xs bg-ember text-ember-foreground hover:bg-ember/90"
-                    >
-                      Sign In
-                    </Button>
+          {/* Confirmation Notice Screen */}
+          {confirmationNotice.show ? (
+            <div className="mt-6 rounded-lg border border-ember/30 bg-ember/10 p-5">
+              <div className="flex items-start gap-3">
+                <Mail className="size-5 text-ember shrink-0 mt-0.5" />
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold text-foreground">
+                    {confirmationNotice.isUnconfirmedLogin
+                      ? "Email Confirmation Required"
+                      : "Check Your Email"}
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    A confirmation link was dispatched to{" "}
+                    <strong className="text-foreground">{confirmationNotice.email}</strong>.
+                    Please verify your email address to activate your Supabase identity.
+                  </p>
+                  <div className="pt-2 flex flex-col gap-2">
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setIsAddingGoogleAccount(false)}
-                      className="h-8 text-xs"
+                      onClick={handleResendEmail}
+                      className="text-xs border-ember/30 bg-surface/80 hover:bg-surface"
                     >
-                      Cancel
+                      <RefreshCw className="size-3 mr-1.5 text-ember" />
+                      Resend Confirmation Email
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setConfirmationNotice({ email: "", show: false })}
+                      className="text-xs text-muted-foreground"
+                    >
+                      Back to sign in
                     </Button>
                   </div>
                 </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsAddingGoogleAccount(true)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-dashed border-border hover:border-foreground/40 bg-transparent hover:bg-surface-raised transition-all text-left"
-                >
-                  <div className="size-9 rounded-full border border-border flex items-center justify-center text-muted-foreground">
-                    <Plus className="size-4" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-foreground">
-                      Use another Google account
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      Add work or personal Google account
-                    </p>
-                  </div>
-                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {isGoogleAuthEnabled() && (
+                <div className="mt-6">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleGoogleSignIn}
+                    disabled={googleBusy || busy}
+                    className="w-full border-border/80 bg-background/80 hover:bg-surface-raised font-sans text-xs font-medium py-5 shadow-xs"
+                  >
+                    <GoogleIcon className="mr-2 size-4" />
+                    <span>Continue with Google</span>
+                  </Button>
+                </div>
               )}
+
+              <div className="relative my-6 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border/60" />
+                </div>
+                <span className="relative bg-surface px-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  {isGoogleAuthEnabled() ? "or email access" : "email access"}
+                </span>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {mode === "signup" && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground font-mono">Full Name</Label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. Dr. Rajesh Kumar"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="text-xs bg-background/60 border-border/70 focus-visible:ring-ember/40"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground font-mono">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                    <Input
+                      type="email"
+                      required
+                      placeholder="operator@organisation.gov.in"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-9 text-xs bg-background/60 border-border/70 focus-visible:ring-ember/40"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs text-muted-foreground font-mono">Password</Label>
+                    {mode === "signin" && (
+                      <span className="font-mono text-[10px] text-muted-foreground/60">
+                        Min. 6 chars
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                    <Input
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-9 text-xs bg-background/60 border-border/70 focus-visible:ring-ember/40"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={busy}
+                  className="w-full bg-ember hover:bg-ember/90 text-ember-foreground font-mono text-xs font-semibold py-5 shadow-sm"
+                >
+                  {busy ? (
+                    <span className="flex items-center gap-2">
+                      <RefreshCw className="size-3.5 animate-spin" />
+                      Authenticating with Supabase...
+                    </span>
+                  ) : mode === "signin" ? (
+                    <span className="flex items-center justify-center gap-1.5">
+                      Sign In to Console
+                      <ArrowRight className="size-3.5" />
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1.5">
+                      Create Operator Account
+                      <ArrowRight className="size-3.5" />
+                    </span>
+                  )}
+                </Button>
+              </form>
+            </>
+          )}
+
+          {/* Security Guarantee */}
+          <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+            <span className="flex items-center gap-1">
+              <Lock className="size-3 text-ember" />
+              Supabase Auth & RLS
+            </span>
+            <span>SIH 2026</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Google OAuth Configuration Guide Modal */}
+      {showGoogleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-xl border border-border bg-surface p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <GoogleIcon className="size-5" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Google OAuth Configuration Notice
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowGoogleModal(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
             </div>
 
-            {/* Bottom Note */}
-            <div className="mt-5 pt-3 border-t border-border/80 text-center">
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                To continue, Google will share your name, email address, and profile picture with
-                INTELLI-FORGE.
+            <div className="mt-4 space-y-3 text-xs text-muted-foreground">
+              <p>
+                Supabase Auth Google provider is active, but requires Google Cloud OAuth credentials to complete the redirect flow.
               </p>
+              <div className="rounded-lg border border-border/80 bg-background/80 p-3 space-y-2 font-mono text-[11px]">
+                <p className="text-foreground font-semibold">To enable Google OAuth for this project:</p>
+                <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                  <li>Open <a href="https://supabase.com/dashboard/project/toqcdcapidfcgxfdqcvy/auth/providers" target="_blank" rel="noreferrer" className="text-ember underline">Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</a></li>
+                  <li>In Google Cloud Console, create an OAuth 2.0 Client ID for Web Application.</li>
+                  <li>Set Authorized Redirect URI to:
+                    <code className="block mt-1 p-1 bg-surface-raised rounded text-foreground font-mono select-all">
+                      https://toqcdcapidfcgxfdqcvy.supabase.co/auth/v1/callback
+                    </code>
+                  </li>
+                  <li>Paste the Client ID and Client Secret into Supabase and Save.</li>
+                </ol>
+              </div>
+              <p>
+                In the meantime, you can register and sign in directly using email and password above.
+              </p>
+            </div>
+
+            <div className="mt-5 flex justify-end">
+              <Button size="sm" onClick={() => setShowGoogleModal(false)}>
+                Understood
+              </Button>
             </div>
           </div>
         </div>
