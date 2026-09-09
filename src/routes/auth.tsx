@@ -29,14 +29,14 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
-      { title: "Operator Access — INTELLI-FORGE" },
+      { title: "Operator Access — ContentForge" },
       {
         name: "description",
         content:
-          "Sign in or register for the INTELLI-FORGE verified content transformation console.",
+          "Sign in or register for the ContentForge verified content transformation console.",
       },
-      { property: "og:title", content: "Operator Access — INTELLI-FORGE" },
-      { property: "og:description", content: "Secure operator access to INTELLI-FORGE." },
+      { property: "og:title", content: "Operator Access — ContentForge" },
+      { property: "og:description", content: "Secure operator access to ContentForge." },
     ],
   }),
   component: AuthPage,
@@ -266,7 +266,7 @@ function AuthPage() {
             <span>Back to Home Portal</span>
           </Link>
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
-            SIH 2026 PS 26154
+            ContentForge · Student Team
           </span>
         </div>
 
@@ -274,7 +274,7 @@ function AuthPage() {
           <div className="flex items-center justify-between border-b border-border/60 pb-5">
             <div>
               <span className="font-mono text-xs font-bold tracking-[0.25em] text-foreground">
-                INTELLI<span className="text-ember">-</span>FORGE
+                Content<span className="text-ember">·</span>Forge
               </span>
               <p className="mt-1 text-xs text-muted-foreground font-sans">
                 Verified Content Transformation Console
@@ -443,7 +443,7 @@ function AuthPage() {
                   {busy ? (
                     <span className="flex items-center gap-2">
                       <RefreshCw className="size-3.5 animate-spin" />
-                      Authenticating with Supabase...
+                      Signing you in...
                     </span>
                   ) : mode === "signin" ? (
                     <span className="flex items-center justify-center gap-1.5">

@@ -80,7 +80,7 @@ export function AuthenticatedLayout() {
           <ShieldCheck className="size-5 animate-spin text-ember" />
           <div>
             <p className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
-              INTELLI-FORGE
+              ContentForge
             </p>
             <p className="font-mono text-[11px] text-muted-foreground">
               Authenticating operator session…
@@ -91,7 +91,7 @@ export function AuthenticatedLayout() {
     );
   }
 
-  const userEmail = session.user?.email || "operator@intelliforge.ai";
+  const userEmail = session.user?.email || "operator@contentforge.local";
   const userInitials = (session.user?.user_metadata?.name || userEmail.split("@")[0])
     .slice(0, 2)
     .toUpperCase();
@@ -108,7 +108,7 @@ export function AuthenticatedLayout() {
                 <ShieldCheck className="size-3.5" />
               </span>
               <span className="font-mono text-sm font-bold tracking-[0.2em] text-foreground group-hover:text-ember transition-colors">
-                INTELLI<span className="text-ember">-</span>FORGE
+                Content<span className="text-ember">·</span>Forge
               </span>
             </div>
             <p className="mt-1 text-[10px] tracking-wide text-muted-foreground font-sans">

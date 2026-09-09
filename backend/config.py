@@ -15,7 +15,6 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or ""
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or ""
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or ""
-LOVABLE_API_KEY = os.getenv("LOVABLE_API_KEY") or ""
 
 QDRANT_URL = os.getenv("QDRANT_URL") or "http://localhost:6333"
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY") or ""

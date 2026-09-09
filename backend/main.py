@@ -15,8 +15,8 @@ from .audit import AuditService
 from .supabase_db import SupabaseDB
 
 app = FastAPI(
-    title="INTELLI-FORGE Application Backend",
-    description="SIH 2026 Problem Statement 26154: Gen AI Platform for Automated Content Transformation",
+    title="ContentForge Application Backend",
+    description="ContentForge platform for fact-locked content transformation",
     version="2.0.0",
 )
 
@@ -34,7 +34,7 @@ rag_engine = HybridRAG()
 def health_check():
     return {
         "status": "online",
-        "service": "INTELLI-FORGE Core API",
+        "service": "ContentForge Core API",
         "version": "2.0.0",
         "modules": {
             "auth": "Supabase Auth (Bearer JWT)",

@@ -33,7 +33,7 @@ export function TopNavbar() {
   };
 
   const displayName = user?.user_metadata?.name || user?.email?.split("@")[0] || "Operator";
-  const userEmail = user?.email || "operator@intelliforge.ai";
+  const userEmail = user?.email || "operator@contentforge.local";
   const userRole = user?.user_metadata?.role || "Certified Operator";
 
   // Section title based on pathname
@@ -69,7 +69,7 @@ export function TopNavbar() {
             to="/dashboard"
             className="text-xs font-semibold text-foreground hover:text-ember transition-colors"
           >
-            INTELLI-FORGE
+            ContentForge
           </Link>
           <span className="text-muted-foreground text-xs hidden sm:inline">·</span>
           <span className="font-mono text-xs text-ember font-medium hidden sm:inline">

@@ -26,7 +26,7 @@ import { useI18n } from "@/context/language-context";
 export const Route = createFileRoute("/_authenticated/upload")({
   head: () => ({
     meta: [
-      { title: "Upload Source Document — INTELLI-FORGE" },
+      { title: "Upload Source Document — ContentForge" },
       {
         name: "description",
         content:

@@ -15,16 +15,16 @@ import { useI18n } from "@/context/language-context";
 export const Route = createFileRoute("/_authenticated/processing/$jobId")({
   head: () => ({
     meta: [
-      { title: "Processing & understanding — INTELLI-FORGE" },
+      { title: "Processing & understanding — ContentForge" },
       {
         name: "description",
         content:
           "Watch each pipeline stage complete live: parsing, understanding, fact lock, indexing.",
       },
-      { property: "og:title", content: "Processing & understanding — INTELLI-FORGE" },
+      { property: "og:title", content: "Processing & understanding — ContentForge" },
       {
         property: "og:description",
-        content: "Live view of the INTELLI-FORGE understanding pipeline.",
+        content: "Live view of the ContentForge understanding pipeline.",
       },
     ],
   }),

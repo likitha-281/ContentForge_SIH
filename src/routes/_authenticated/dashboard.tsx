@@ -25,16 +25,16 @@ import { useI18n } from "@/context/language-context";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Operator Dashboard — INTELLI-FORGE" },
+      { title: "Operator Dashboard — ContentForge" },
       {
         name: "description",
         content:
           "Live counts of sources, artefacts awaiting review, verified and flagged claims across your workspace.",
       },
-      { property: "og:title", content: "Operator Dashboard — INTELLI-FORGE" },
+      { property: "og:title", content: "Operator Dashboard — ContentForge" },
       {
         property: "og:description",
-        content: "Live status of your content transformation pipeline.",
+        content: "Live status of your ContentForge transformation pipeline.",
       },
     ],
   }),

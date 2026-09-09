@@ -15,15 +15,15 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "INTELLI-FORGE — Transform Faster. Verify Before You Trust." },
+      { title: "ContentForge — Transform Faster. Verify Before You Trust." },
       {
         name: "description",
         content:
-          "One source, many audiences, every claim traceable. INTELLI-FORGE turns reports and advisories into audience-ready artefacts with fact locking, evidence tracing and a human approval gate.",
+          "One source, many audiences, every claim traceable. ContentForge turns reports and advisories into audience-ready artefacts with fact locking, evidence tracing and a human approval gate.",
       },
       {
         property: "og:title",
-        content: "INTELLI-FORGE — Transform Faster. Verify Before You Trust.",
+        content: "ContentForge — Transform Faster. Verify Before You Trust.",
       },
       {
         property: "og:description",
@@ -93,7 +93,7 @@ function Landing() {
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <span className="font-mono text-sm font-semibold tracking-[0.22em] text-foreground">
-            INTELLI<span className="text-ember">-</span>FORGE
+            Content<span className="text-ember">·</span>Forge
           </span>
           <div className="flex items-center gap-3 md:gap-5">
             <LanguageSwitcher />
@@ -127,7 +127,7 @@ function Landing() {
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
             {t(
               "landing.heroSub",
-              "INTELLI-FORGE turns one piece of received information into audience-ready, fact-grounded, human-approved communication — with the evidence for every sentence one click away.",
+              "ContentForge turns one piece of received information into audience-ready, fact-grounded, human-approved communication — with the evidence for every sentence one click away.",
             )}
           </p>
           <p className="mt-4 max-w-2xl font-mono text-sm text-muted-foreground">
@@ -218,7 +218,7 @@ function Landing() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8">
           <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-            {t("brand.title", "INTELLI-FORGE")} · {t("brand.sih", "SIH 2026 PS 26154")}
+            {t("brand.title", "ContentForge")} · {t("brand.sih", "SIH 2026 PS 26154")}
           </p>
           <p className="text-xs text-muted-foreground">
             {t("Sample scenarios in this prototype are fictional and clearly labelled.")}

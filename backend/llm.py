@@ -1,14 +1,11 @@
 import json
 import os
-import httpx
 from typing import Dict, Any, List, Optional
-from .config import GEMINI_API_KEY, OPENAI_API_KEY, LOVABLE_API_KEY
+from .config import GEMINI_API_KEY, OPENAI_API_KEY
 
 class LLMService:
     """
-    INTELLI-FORGE Generation Service:
-    Produces audience-targeted, tone-aligned transformation artefacts
-    grounded firmly in the Fact-Locked source document.
+    ContentForge generation service for audience-targeted, fact-locked artefacts.
     """
 
     @staticmethod
@@ -29,7 +26,7 @@ class LLMService:
         """
         facts_summary = "\n".join(f"- {f.get('label')}: {f.get('value')} (PROTECTED FACT)" for f in locked_facts)
 
-        prompt = f"""You are INTELLI-FORGE, a high-assurance intelligence transformation engine.
+        prompt = f"""You are ContentForge, a high-assurance content transformation engine.
 Your task is to transform the provided source intelligence into a verified, format-compliant artefact.
 
 SOURCE METADATA:
@@ -70,29 +67,6 @@ CRITICAL RULES:
                     }
             except Exception as e:
                 print(f"[Gemini API Notice]: {e}")
-
-        # Check Lovable Gateway
-        if LOVABLE_API_KEY:
-            try:
-                with httpx.Client(timeout=15.0) as client:
-                    res = client.post(
-                        "https://ai.gateway.lovable.dev/v1/chat/completions",
-                        headers={"Authorization": f"Bearer {LOVABLE_API_KEY}"},
-                        json={
-                            "model": "google/gemini-2.5-flash",
-                            "messages": [{"role": "user", "content": prompt}]
-                        }
-                    )
-                    if res.status_code == 200:
-                        data = res.json()
-                        text = data["choices"][0]["message"]["content"]
-                        return {
-                            "content": text.strip(),
-                            "model": "google/gemini-2.5-flash",
-                            "status": "generated"
-                        }
-            except Exception as e:
-                print(f"[Gateway Notice]: {e}")
 
         # High-Fidelity Deterministic Fallback adhering strictly to Fact Lock
         # Find key facts
@@ -155,6 +129,6 @@ Technical teams are currently updating system components to {ver_val}. Citizens 
 
         return {
             "content": content.strip(),
-            "model": "intelli-forge-grounded-engine/v2.1",
+            "model": "contentforge-grounded-engine/v2.1",
             "status": "generated"
         }

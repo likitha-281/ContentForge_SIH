@@ -29,7 +29,7 @@ import { useI18n } from "@/context/language-context";
 export const Route = createFileRoute("/_authenticated/audit")({
   head: () => ({
     meta: [
-      { title: "Audit Trail & Cryptographic Verification — INTELLI-FORGE" },
+      { title: "Audit Trail & Cryptographic Verification — ContentForge" },
       {
         name: "description",
         content:

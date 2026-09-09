@@ -15,12 +15,7 @@ export type ChatMessage = {
 };
 
 function getApiKey(): string | null {
-  return (
-    process.env["LOVABLE_API_KEY"] ||
-    process.env["GEMINI_API_KEY"] ||
-    process.env["OPENAI_API_KEY"] ||
-    null
-  );
+  return process.env["GEMINI_API_KEY"] || process.env["OPENAI_API_KEY"] || null;
 }
 
 /** Fallback generator that produces grounded structured text when remote API is offline */
