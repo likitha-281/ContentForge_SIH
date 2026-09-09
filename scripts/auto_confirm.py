@@ -1,4 +1,4 @@
-﻿import ssl
+import ssl
 import pg8000.native
 
 ctx = ssl.create_default_context()

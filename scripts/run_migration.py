@@ -1,4 +1,4 @@
-﻿import os
+import os
 import ssl
 import pg8000.native
 
